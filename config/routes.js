@@ -1,12 +1,12 @@
 const router = require('express').Router();
-const yearbooksController = require('../controllers/yearbooksController.js');
+const fireworksController = require('../controllers/fireworksController.js');
 
-router.route('/yearbooks')
-.get(yearbooksController.index)
-.post(yearbooksController.create);
+router.route('/fireworks')
+.get(fireworksController.index)
+.post(fireworksController.create);
 
 
-  router.route('/yearbooks/:id')
-    .get(yearbooksController.show);
+  router.route('/fireworks/:id')
+    .get(fireworksController.show);
 
     module.exports = router;
