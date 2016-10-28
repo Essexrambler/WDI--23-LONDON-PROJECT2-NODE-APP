@@ -3,7 +3,7 @@ const Yearbook = require('../models/yearbook');
 function yearbooksIndex(req, res) {
   Yearbook.find({}, (err, yearbook) => {
     if(err) res.status(500).json({error: err});
-    res.json(yearbooks);
+    res.json(yearbook);
   });
 }
 
