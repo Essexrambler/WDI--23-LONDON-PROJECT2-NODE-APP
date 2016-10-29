@@ -42,6 +42,9 @@ $(() =>{
       <input class="form-control" name="email" placeholder="Email">
       </div>
       <div class="form-group">
+      <input class="form-control" name="postcode" placeholder="Postcode">
+      </div>
+      <div class="form-group">
       <input class="form-control" type="password" name="password" placeholder="Password">
       </div>
       <div class="form-group">
@@ -56,7 +59,7 @@ $(() =>{
       if(event) event.preventDefault();
       $main.html(`
         <h2>Login</h2>
-        <form method="post" action="/login">
+        <form method="post" action="/fireworks">
         <div class="form-group">
         <input class="form-control" name="email" placeholder="Email">
         </div>
@@ -109,7 +112,7 @@ $(() =>{
             let url = $form.attr('action');
             let method = $form.attr('method');
             let data = $form.serialize();
-            console.log("FORM", data, url, method, token);
+
 
             $.ajax({
               url,
@@ -201,13 +204,13 @@ $(() =>{
             function showPlaceForm() {
               if(event) event.preventDefault();
               $main.html(`
-                <h2>Create Place</h2>
-                <form method="post" action="/places">
+                <h2>Add Members</h2>
+                <form method="post" action="/members">
                 <div class="form-group">
-                <input class="form-control" name="name" placeholder="Name of place">
+                <input class="form-control" name="name" placeholder="Name of member">
                 </div>
                 <div class="form-group">
-                <input class="form-control" name="category" placeholder="Category">
+                <input class="form-control" name="category" placeholder="Postcode">
                 </div>
                 <div class="form-group">
                 <input class="form-control" type="number" name="lat" placeholder="Lattitude">
