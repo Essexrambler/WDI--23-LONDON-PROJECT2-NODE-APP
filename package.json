@@ -12,8 +12,7 @@
   "dependencies": {
     "bcrypt": "^0.8.7",
     "body-parser": "^1.15.2",
-    "express": "^4.14.0",
-    "cors": "2.8.1",
+    "cors": "^2.8.1",
     "express": "^4.14.0",
     "express-jwt-token": "^0.1.5",
     "jsonwebtoken": "^7.1.9",

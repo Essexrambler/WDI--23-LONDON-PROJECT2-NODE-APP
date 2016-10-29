@@ -105,7 +105,7 @@ $(() =>{
             if(event) event.preventDefault();
             let token = localStorage.getItem('token');
             let $form = $(this);
-
+            console.log(token);
             let url = $form.attr('action');
             let method = $form.attr('method');
             let data = $form.serialize();
