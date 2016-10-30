@@ -15,8 +15,8 @@ $(() =>{
   //PLACES STUFF
   // $main.on('click', 'button.deletePlace', deletePlace);
   // $main.on('click', 'button.editPlace', getPlace);
-  $('.places').on('click', getPlaces);
-  $('.place').on('click', showPlaceForm);
+  // $('.places').on('click', getPlaces);
+  // $('.place').on('click', showPlaceForm);
 
   function isLoggedIn() {
     return !!localStorage.getItem('token');
@@ -24,11 +24,20 @@ $(() =>{
 
   if(isLoggedIn()) {
     console.log('Logged In Is: ',isLoggedIn());
-    getPlaces();
+    getFireworksDisplay();
   } else {
     console.log('Logged In Is: ',isLoggedIn());
-    showLoginForm();
+    fireworksSplash();
   }
+
+  function fireworksSplash() {
+    $main.html(`
+      <h2>Welcome to Londons Burning - firworks display App!</h2>
+      <button><a class="login loggedOut" href="#">Login</a></button>
+      <button><a class="register loggedOut" href="#">Register</a></button>`
+    ); $('.login').on( "click", showRegisterForm);
+    $('.register').on('click', showRegisterForm);
+}
 
   function showRegisterForm() {
     if(event) event.preventDefault();
@@ -164,14 +173,14 @@ $(() =>{
             showLoginForm();
           }
 
-          ///////////////////////////////PLACES STUFF STARTS HERE////////////////////////////////
+          ///////////////////////////////fireworks STUFF STARTS HERE////////////////////////////////
 
-          function getPlaces() {
+          function getFireworksDisplay() {
             console.log("H!");
             if(event) event.preventDefault();
             let token = localStorage.getItem('token');
             $.ajax({
-              url: '/places',
+              url: '/fireworks',
               method: 'get',
               beforeSend: function(jqXHR) {
                 if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
