@@ -9,8 +9,9 @@ $(() =>{
   $('.logout').on('click', logout);
   $main.on('click', 'button.delete', deleteUser);
   $main.on('click', 'button.edit', getUser);
-
   $main.on('submit', 'form', handleForm);
+  weatherApiCall();
+
 
   //PLACES STUFF
   // $main.on('click', 'button.deletePlace', deletePlace);
@@ -18,9 +19,12 @@ $(() =>{
   // $('.places').on('click', getPlaces);
   // $('.place').on('click', showPlaceForm);
 
+
   function isLoggedIn() {
     return !!localStorage.getItem('token');
   }
+
+
 
   if(isLoggedIn()) {
     console.log('Logged In Is: ',isLoggedIn());
@@ -30,14 +34,20 @@ $(() =>{
     fireworksSplash();
   }
 
+
+// this is main intro page- direct users to either login or register
+
   function fireworksSplash() {
     $main.html(`
       <h2>Welcome to Londons Burning - firworks display App!</h2>
       <button><a class="login loggedOut" href="#">Login</a></button>
-      <button><a class="register loggedOut" href="#">Register</a></button>`
-    ); $('.login').on( "click", showRegisterForm);
+      <button><a class="register loggedOut" href="#">Register</a></button>
+      <img src="images/fDisaply.jpg">`
+    ); $('.login').on( "click", showLoginForm);
     $('.register').on('click', showRegisterForm);
 }
+
+
 
   function showRegisterForm() {
     if(event) event.preventDefault();
@@ -75,7 +85,7 @@ $(() =>{
         <div class="form-group">
         <input class="form-control" type="password" name="password" placeholder="Password">
         </div>
-        <button class="btn btn-primary">Register</button>
+        <button class="btn btn-primary">Login</button>
         </form>
         `);
       }
@@ -232,3 +242,22 @@ $(() =>{
                 `);
               }
         });
+
+
+// api call to weather function- need to include logo but can't scale yet- '<img src="images/wundergroundLogo_4c_horz2.jpg"/>'
+
+      function weatherApiCall() {
+
+        $.ajax({
+          url: "http://api.wunderground.com/api/b9fbef563cd64e2c/conditions/q/GB/London.json",
+          dataType: "json",
+          success: function(url) {
+            console.log(url);
+            var temp_c = url.current_observation.temp_c;
+            var outlook = url.current_observation.icon;
+            var precip = url.current_observation.precip_today_metric;
+            var precipPic = url.current_observation.icon_url;
+            $("ul.nav > li.weatherApi").html("London | " + temp_c + "ºC" + " | " + precip + "mm " + " | " + outlook + " | " + '<img src="'+ precipPic +' "/>' + " | ");
+          }
+        });
+      }
