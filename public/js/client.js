@@ -10,7 +10,7 @@ $(() =>{
   $main.on('click', 'button.delete', deleteUser);
   $main.on('click', 'button.edit', getUser);
   $main.on('submit', 'form', handleForm);
-  weatherApiCall();
+  // weatherApiCall();
 
 
   //PLACES STUFF
@@ -28,7 +28,7 @@ $(() =>{
 
   if(isLoggedIn()) {
     console.log('Logged In Is: ',isLoggedIn());
-    getFireworksDisplay();
+    showProfile();
   } else {
     console.log('Logged In Is: ',isLoggedIn());
     fireworksSplash();
@@ -39,10 +39,13 @@ $(() =>{
 
   function fireworksSplash() {
     $main.html(`
-      <h2>Welcome to Londons Burning - firworks display App!</h2>
-      <button><a class="login loggedOut" href="#">Login</a></button>
-      <button><a class="register loggedOut" href="#">Register</a></button>
-      <img src="images/fDisaply.jpg">`
+      <div class="one-third column">&nbsp;</div>
+      <div class="one-third column">
+      <h2>Welcome to Londons Burning - fireworks display App!</h2>
+      <button class ="login loggedOut u-full-width" href= "#">Login</button>
+      <button class ="register loggedOut u-full-width" href= "#">Register</button>
+      </div>
+      <div class="one-third column">&nbsp;</div>`
     ); $('.login').on( "click", showLoginForm);
     $('.register').on('click', showRegisterForm);
 }
@@ -52,43 +55,81 @@ $(() =>{
   function showRegisterForm() {
     if(event) event.preventDefault();
     $main.html(`
-      <h2>Register</h2>
+      <div class="one-third column">&nbsp;</div>
+      <div class="one-third column">
+        <h2>Register</h2>
       <form method="post" action="/register">
       <div class="form-group">
-      <input class="form-control" name="username" placeholder="Username">
+      <input class="u-full-width" type="text" name="username" placeholder="Username">
       </div>
       <div class="form-group">
-      <input class="form-control" name="email" placeholder="Email">
+      <input class="u-full-width" type="text" name="email" placeholder="Email">
       </div>
       <div class="form-group">
-      <input class="form-control" name="postcode" placeholder="Postcode">
+      <input class="u-full-width" type="text" name="postcode" placeholder="Postcode">
       </div>
       <div class="form-group">
-      <input class="form-control" type="password" name="password" placeholder="Password">
+      <input class="u-full-width" type="password" name="password" placeholder="Password">
       </div>
       <div class="form-group">
-      <input class="form-control" type="password" name="passwordConfirmation" placeholder="Password Confirmation">
+      <input class="u-full-width" type="password" name="passwordConfirmation" placeholder="Password Confirmation">
       </div>
-      <button class="btn btn-primary">Register</button>
-      </form>
+      <button class="btn btn-primary u-full-width">Register</button>
+      </form></div>
+      <div class="one-third column">&nbsp;</div>
+
       `);
     }
 
     function showLoginForm() {
       if(event) event.preventDefault();
       $main.html(`
-        <h2>Login</h2>
-        <form method="post" action="/fireworks">
+        <div class="one-third column">&nbsp;</div>
+        <div class="one-third column">  <h2>Login</h2>
+        <form method="post" action="/login">
         <div class="form-group">
-        <input class="form-control" name="email" placeholder="Email">
+        <input class="form-control u-full-width" type="text" name="email" placeholder="Email">
         </div>
         <div class="form-group">
-        <input class="form-control" type="password" name="password" placeholder="Password">
+        <input class="form-control u-full-width" type="password" name="password" placeholder="Password">
         </div>
-        <button class="btn btn-primary">Login</button>
-        </form>
+        <button class="btn btn-primary u-full-width">Login</button>
+        </form></div>
+        <div class="one-third column">&nbsp;</div>
         `);
       }
+
+
+      function showProfile() {
+        if(event) event.preventDefault();
+        $main.html(`
+          <div class="one-third column">&nbsp;</div>
+          <div class="one-third column">
+          <h2>Welcome</h2>
+          <p> Two ways to use this App.
+          1. Give your group name to your friends. So they can register
+          and join the same group.<br>
+          2.Enter the other memebers details yourself, provided you know the address of where they will be travelling from.<br>
+          3. Alternatively, plan your own individual route.
+          <button class="btn btn-primary u-full-width">Find Firework displays</button>
+          <button class="btn btn-primary u-full-width">See selected</button>
+          </div>
+          <div class="one-third column">&nbsp;</div>
+          `);
+        }
+
+
+
+
+
+
+
+
+
+
+
+// old code- reuse as necessary
+
 
       function showUsers(users) {
         let $row = $('<div class="row"></div>');
@@ -143,7 +184,7 @@ $(() =>{
             }).done((data) => {
               console.log(data);
               if(data.token) localStorage.setItem('token', data.token);
-              getPlaces();
+              showProfile();
             }).fail(showLoginForm);
           }
 
@@ -220,6 +261,7 @@ $(() =>{
 
               $main.html($row);
             }
+
             function showPlaceForm() {
               if(event) event.preventDefault();
               $main.html(`

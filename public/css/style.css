@@ -1,1 +1,23 @@
 .hidden{display:none!important}
+
+body {
+  background-color: black;
+  color: white;
+  text-align: center;
+}
+
+
+button {
+  background-color: orange;
+}
+
+
+
+
+
+
+
+
+/*input[type=text]{
+  background-color: green;
+}*/
