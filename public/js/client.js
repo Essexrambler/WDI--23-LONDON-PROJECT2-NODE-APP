@@ -86,7 +86,7 @@ $(() => {
       $main.html(`
 
         <div class="one-third column">&nbsp;</div>
-        <div class="one-third column">  <h2>Login</h2>
+        <div class="one-third column">
 
         <h2>Login</h2>
         <form method="post" action="/login">
@@ -120,6 +120,21 @@ $(() => {
           <div class="one-third column">&nbsp;</div>
           `);
         }
+
+        function createGroup() {
+          if(event) event.preventDefault();
+          $main.html(`
+            <div class="one-third column">&nbsp;</div>
+            <div class="one-third column">
+            <h2>Create Group</h2>
+
+            <button class="btn btn-primary u-full-width">Create Group</button>
+            <button class="btn btn-primary u-full-width">Join Group</button>
+            <button class="btn btn-primary u-full-width">Not now</button>
+            </div>
+            <div class="one-third column">&nbsp;</div>
+            `);
+          }
 
 
 
@@ -187,7 +202,7 @@ $(() => {
             }).done((data) => {
               console.log(data);
               if(data.token) localStorage.setItem('token', data.token);
-              showProfile();
+              createGroup();
             }).fail(showLoginForm);
           }
 
