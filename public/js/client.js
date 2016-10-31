@@ -1,4 +1,4 @@
-$(() =>{
+$(() => {
 
   let $main = $('main');
 
@@ -84,8 +84,11 @@ $(() =>{
     function showLoginForm() {
       if(event) event.preventDefault();
       $main.html(`
+
         <div class="one-third column">&nbsp;</div>
         <div class="one-third column">  <h2>Login</h2>
+
+        <h2>Login</h2>
         <form method="post" action="/login">
         <div class="form-group">
         <input class="form-control u-full-width" type="text" name="email" placeholder="Email">
