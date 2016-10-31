@@ -63,9 +63,6 @@ $(() => {
       <input class="u-full-width" type="text" name="username" placeholder="Username">
       </div>
       <div class="form-group">
-      <input class="u-full-width" type="text" name="email" placeholder="Email">
-      </div>
-      <div class="form-group">
       <input class="u-full-width" type="text" name="postcode" placeholder="Postcode">
       </div>
       <div class="form-group">
@@ -86,12 +83,12 @@ $(() => {
       $main.html(`
 
         <div class="one-third column">&nbsp;</div>
-        <div class="one-third column">  <h2>Login</h2>
-
+        <div class="one-third column">
+        
         <h2>Login</h2>
         <form method="post" action="/login">
         <div class="form-group">
-        <input class="form-control u-full-width" type="text" name="email" placeholder="Email">
+        <input class="form-control u-full-width" type="text" name="username" placeholder="Username">
         </div>
         <div class="form-group">
         <input class="form-control u-full-width" type="password" name="password" placeholder="Password">
@@ -175,7 +172,6 @@ $(() => {
             let url = $form.attr('action');
             let method = $form.attr('method');
             let data = $form.serialize();
-
 
             $.ajax({
               url,

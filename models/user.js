@@ -4,9 +4,10 @@ const validator = require('validator');
 
 const userSchema = mongoose.Schema({
 username: {type:String, required: true, unique: true},
-email: {type:String, required: true, unique: true},
-postcode:     { type: String, required: true},
-passwordHash: {type:String, required: true}
+address:     { type: String, required: true},
+passwordHash: {type:String, required: true},
+groupName: String,
+selectedFireworkDisplayId: String
 });
 
 
@@ -59,7 +60,6 @@ userSchema.methods.validatePassword = validatePassword;
 userSchema.set("toJSON", {
   transform: function(doc, ret) {
     delete ret.passwordHash;
-    delete ret.email;
     delete ret.__v;
     return ret;
   }
