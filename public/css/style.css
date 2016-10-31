@@ -12,7 +12,15 @@ button {
 }
 
 
+#nav {
+  margin: 13px 0 0 0;
+}
 
+#nav ul li {
+  display: inline;
+  margin: 0 20px 0 0;
+  margin-bottom: 130px;
+}
 
 
 
