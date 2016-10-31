@@ -1,4 +1,4 @@
-$(() =>{
+$(() => {
 
   let $main = $('main');
 
@@ -78,7 +78,7 @@ $(() =>{
       if(event) event.preventDefault();
       $main.html(`
         <h2>Login</h2>
-        <form method="post" action="/fireworks">
+        <form method="post" action="/login">
         <div class="form-group">
         <input class="form-control" name="email" placeholder="Email">
         </div>
