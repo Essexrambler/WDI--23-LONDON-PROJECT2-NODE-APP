@@ -3,7 +3,7 @@ $(() => {
   let $main = $('main');
 
   //USERS STUFF
-  $('.register').on('click', showRegisterForm);
+  //$('.register').on('click', showRegisterForm);
   $('.login').on('click', showLoginForm);
   $('.usersIndex').on('click', getUsers);
   $('.logout').on('click', logout);
