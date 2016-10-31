@@ -15,7 +15,6 @@ function secureRoute(req, res, next) {
   });
 }
 
-
 router.route('/register')
   .post(authControllers.register);
 router.route('/login')

@@ -4,12 +4,11 @@ const validator = require('validator');
 
 const userSchema = mongoose.Schema({
 username: {type:String, required: true, unique: true},
-postcode:     { type: String, required: true},
+address:  { type: String, required: true},
 passwordHash: {type:String, required: true},
 groupName: String,
 selectedFireworkDisplayId: String
 });
-
 
 function setPassword(value){
   this._password  = value;
@@ -54,7 +53,6 @@ userSchema
   .path('passwordHash')
   .validate(validatePasswordHash);
 
-
 userSchema.methods.validatePassword = validatePassword;
 
 userSchema.set("toJSON", {
@@ -64,7 +62,5 @@ userSchema.set("toJSON", {
     return ret;
   }
 });
-
-
 
 module.exports = mongoose.model('User', userSchema);
