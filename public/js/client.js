@@ -10,10 +10,61 @@ $(() => {
     return !!localStorage.getItem('token');
   }
 
+
   if(isLoggedIn()) {
     createGroup();
   } else {
     fireworksSplash();
+  }
+
+  $main.on('submit', 'form.join-group', getUsers);
+
+
+
+  function getUsers(event) {
+    if(event) event.preventDefault();
+    let form = $(this);
+    let groupName = form.find('input[name="groupname"]').val();
+    let token = localStorage.getItem('token');
+    $.ajax({
+      url: "/users",
+      method: "get",
+      beforeSend: function(jqXHR) {
+        if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
+      }
+    }).done((users) => {
+      checkForExistingGroup(users, groupName);
+      // console.log(users);
+    });
+  }
+
+  function checkForExistingGroup(users, groupName){
+
+    let match = false;
+    users.forEach((user) => {
+      if(user.groupname == groupName) {
+        match = true;
+      }
+    });
+
+    if (match === true) {
+      alert("SUCCESS!!!");
+
+      let userId = localStorage.getItem('userId');
+
+      $.ajax({
+        url:"/users/${userId}",
+        method:"put",
+
+      });
+      // make an post request ajax call
+      // get id from local storage
+      // get token
+      // data : { groupname: groupnamehere }
+      //
+    } else {
+      alert("Group name not found, please try again");
+    }
   }
 
   function createGroup() {
@@ -41,14 +92,14 @@ $(() => {
       <div class="one-third column">
         <h2>Join Group</h2>
 
-        <form method="post" action="/login">
-          <input class="form-control u-full-width" type="text" name="username" placeholder="Enter group name">
+        <form method="post" action="/login" class="join-group">
+          <input class="form-control u-full-width" type="text" name="groupname" placeholder="Enter group name">
           <button class="btn btn-primary u-full-width profile">submit</button>
         </form>
       </div>
       <div class="one-third column">&nbsp;</div>
     `);
-    $('.profile').on('submit', 'form', handleForm);
+    $('.profile').on('submit', 'form', handleGroupForm);
   }
 
   function createNewGroup() {
@@ -67,7 +118,7 @@ $(() => {
       </div>
       <div class="one-third column">&nbsp;</div>
     `);
-    $('.profile').on('submit', 'form', handleForm);
+    $('.profile').on('submit', 'form', handleGroupForm);
 
   }
 
@@ -169,6 +220,7 @@ $(() => {
   function handleForm() {
     if(event) event.preventDefault();
     let token = localStorage.getItem('token');
+    let userId = localStorage.getItem('userId');
     let $form = $(this);
     let url = $form.attr('action');
     let method = $form.attr('method');
@@ -183,6 +235,7 @@ $(() => {
       }
     }).done((data) => {
       if(data.token) localStorage.setItem('token', data.token);
+      if(data.user._id) localStorage.setItem('userId', data.user._id);
       let currentUsername = data.user.username;
       let currentUsergroup = data.user.groupname;
       createGroup();
