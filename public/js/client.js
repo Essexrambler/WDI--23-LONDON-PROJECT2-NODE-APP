@@ -2,6 +2,10 @@ $(() => {
 
   let $main = $('main');
 
+  window.onpopstate = function() {
+ $('#main_content').load(location.href);
+};
+
   function isLoggedIn() {
     return !!localStorage.getItem('token');
   }
@@ -19,13 +23,55 @@ $(() => {
       <div class="one-third column">
       <h2>Create Group</h2>
 
-      <button class="btn btn-primary u-full-width">Create Group</button>
-      <button class="btn btn-primary u-full-width">Join Group</button>
-      <button class="btn btn-primary u-full-width">Got No Friends</button>
+      <button class="btn btn-primary u-full-width create">Create Group</button>
+      <button class="btn btn-primary u-full-width join">Join Group</button>
+      <button class="btn btn-primary u-full-width profile">Got No Friends</button>
       </div>
       <div class="one-third column">&nbsp;</div>
-      `);
+      `);$('.create').on( "click", createNewGroup);
+      $('.join').on( "click", joinGroup);
+      $('.profile').on( "click", showProfile);
+
+
     }
+
+    function joinGroup() {
+      if(event) event.preventDefault();
+      $main.html(`
+        <div class="one-third column">&nbsp;</div>
+        <div class="one-third column">
+        <h2>Join Group</h2>
+
+        <form method="post" action="/login">
+        <input class="form-control u-full-width" type="text" name="username" placeholder="Enter group name">
+        <button class="btn btn-primary u-full-width profile">submit</button>
+        </form>
+        </div>
+        <div class="one-third column">&nbsp;</div>
+        `);
+        $('.profile').on('submit', 'form', handleForm);
+
+
+      }
+
+      function createNewGroup() {
+        if(event) event.preventDefault();
+        $main.html(`
+          <div class="one-third column">&nbsp;</div>
+          <div class="one-third column">
+          <h2>Create Group</h2>
+
+          <form method="post" action="/login">
+          <input class="form-control u-full-width" type="text" name="username" placeholder="Group name">
+          <button class="btn btn-primary u-full-width profile">submit</button>
+          </form>
+          </div>
+          <div class="one-third column">&nbsp;</div>
+          `);
+          $('.profile').on('submit', 'form', handleForm);
+
+        }
+
 
     function fireworksSplash() {
       $main.html(`
@@ -39,6 +85,24 @@ $(() => {
       ); $('.login').on( "click", showLoginForm);
       $('.register').on('click', showRegisterForm);
     }
+
+    function showProfile() {
+      if(event) event.preventDefault();
+      $main.html(`
+        <div class="one-third column">&nbsp;</div>
+        <div class="one-third column">
+        <h2>Welcome</h2>
+        <p> Two ways to use this App.
+        1. Give your group name to your friends. So they can register
+        and join the same group.<br>
+        2.Enter the other memebers details yourself, provided you know the address of where they will be travelling from.<br>
+        3. Alternatively, plan your own individual route.
+        <button class="btn btn-primary u-full-width">Find Firework displays</button>
+        <button class="btn btn-primary u-full-width">See selected</button>
+        </div>
+        <div class="one-third column">&nbsp;</div>
+        `);
+      }
 
     function showLoginForm() {
       if(event) event.preventDefault();
@@ -139,24 +203,10 @@ $(() => {
 
         });
 
+
+
         // NOT CURRENTLY IN USE ANYWHERE
-        // function showProfile() {
-        //   if(event) event.preventDefault();
-        //   $main.html(`
-        //     <div class="one-third column">&nbsp;</div>
-        //     <div class="one-third column">
-        //     <h2>Welcome</h2>
-        //     <p> Two ways to use this App.
-        //     1. Give your group name to your friends. So they can register
-        //     and join the same group.<br>
-        //     2.Enter the other memebers details yourself, provided you know the address of where they will be travelling from.<br>
-        //     3. Alternatively, plan your own individual route.
-        //     <button class="btn btn-primary u-full-width">Find Firework displays</button>
-        //     <button class="btn btn-primary u-full-width">See selected</button>
-        //     </div>
-        //     <div class="one-third column">&nbsp;</div>
-        //     `);
-        //   }
+        //
 
         //Not in use yet
         // function getFireworksDisplay() {

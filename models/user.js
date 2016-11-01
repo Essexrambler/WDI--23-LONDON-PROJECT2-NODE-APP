@@ -6,8 +6,8 @@ const userSchema = mongoose.Schema({
 username: {type:String, required: true, unique: true},
 address:  { type: String, required: true},
 passwordHash: {type:String, required: true},
-groupName: String,
-selectedFireworkDisplayId: String
+// groupName: String,
+// selectedFireworkDisplayId: String
 });
 
 function setPassword(value){
