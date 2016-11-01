@@ -303,14 +303,18 @@ $(() => {
   getFireworksDisplayData();
 
   function getCurrentUser () {
+    let token = localStorage.getItem('token');
     $.ajax({
       method: "GET",
-      url: "/users/:id",
+      url: `/users/${localStorage.getItem('userId')}`,
+      beforeSend: function(jqXHR) {
+        if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
+      }
     }).done((data) => {
-      fireworksData = data;
+      console.log(data);
     });
   }
-  // getCurrentUser();
+  getCurrentUser();
 
   function getUserDisplayTravelTimes () {
     console.log(fireworksData);

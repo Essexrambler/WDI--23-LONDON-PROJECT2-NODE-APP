@@ -7,7 +7,7 @@ function register(req, res){
     console.log(err);
     if (err) return res.status(500).json({ message: "Something went wrong.", err });
     let payload = { _id: user._id, username: user.username };
-    let token = jwt.sign(payload, secret, { expiresIn: 60*5 });
+    let token = jwt.sign(payload, secret, { expiresIn: 60*60*24 });
     return res.status(201).json({
       message: 'Welcome',
       user,
@@ -27,7 +27,7 @@ function login(req, res){
     });
   }
   let payload = { _id: user._id, username: user.username };
-  let token = jwt.sign(payload, secret, { expiresIn: 60*5 });
+  let token = jwt.sign(payload, secret, { expiresIn: 60*60*24 });
   return res.status(200).json({
     message: 'Welcome back',
     user,
