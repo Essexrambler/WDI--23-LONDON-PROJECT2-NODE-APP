@@ -23,7 +23,7 @@ function usersCreate(req, res) {
 }
 
 function usersUpdate(req, res) {
-  User.findByIdAndUpdate(req.params.id, req.body.user, { new: true },  (err, user) => {
+  User.findByIdAndUpdate(req.params.id, req.body, { new: true },  (err, user) => {
     if (err) return res.status(500).json({ message: "Error" });
     return res.status(200).json(user);
   });

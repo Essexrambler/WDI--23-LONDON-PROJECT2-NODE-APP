@@ -1,6 +1,9 @@
 $(() => {
 
   let $main = $('main');
+  let currentUsername;
+  let currentUsergroup;
+  let currentUserId;
 
 
   function isLoggedIn() {
@@ -37,7 +40,7 @@ $(() => {
         <div class="one-third column">
         <h2>Join Group</h2>
 
-        <form method="post" action="/login">
+        <form method="put" action="/login">
         <input class="form-control u-full-width" type="text" name="username" placeholder="Enter group name">
         <button class="btn btn-primary u-full-width profile">submit</button>
         <button class="btn btn-primary u-full-width back">Go Back</button>
@@ -51,22 +54,23 @@ $(() => {
 
       function createNewGroup() {
         if(event) event.preventDefault();
+        let id = localStorage.getItem('userId');
         $main.html(`
           <div class="one-third column">&nbsp;</div>
           <div class="one-third column">
           <h2>Create Group</h2>
 
-          <form method="post" action="/users/">
-          <input class="form-control u-full-width" type="text" name="username" placeholder="Group name">
-          <button class="btn btn-primary u-full-width profile">submit</button>
+          <form method="put" action="/users/${id}" class="new-group">
+          <input class="form-control u-full-width" type="text" name="groupname" placeholder="Group name">
+          <button class="btn btn-primary u-full-width profile">Submit</button>
           <button class="btn btn-primary u-full-width back">Go Back</button>
           </form>
           </div>
           <div class="one-third column">&nbsp;</div>
-          `);
-          $('.profile').on('submit', 'form', handleForm);
-          $('.back').on( "click", createGroup);
-        }
+        `);
+        $('.profile').on('submit', 'form', handleForm);
+        $('.back').on( "click", createGroup);
+      }
 
 
     function fireworksSplash() {
@@ -110,7 +114,7 @@ $(() => {
         <div class="one-third column">&nbsp;</div>
         <div class="one-third column">
         <h2>Login</h2>
-        <form method="post" action="/login">
+        <form method="post" action="/login" class="auth">
         <div class="form-group">
         <input class="form-control u-full-width" type="text" name="username" placeholder="Username">
         </div>
@@ -129,7 +133,7 @@ $(() => {
           <div class="one-third column">&nbsp;</div>
           <div class="one-third column">
           <h2>Register</h2>
-          <form method="post" action="/register">
+          <form method="post" action="/register" class="auth">
           <div class="form-group">
           <input class="u-full-width" type="text" name="username" placeholder="Username">
           </div>
@@ -147,7 +151,6 @@ $(() => {
           <div class="one-third column">&nbsp;</div>
           <div id="map"></div>
           `);
-          initMap();
         }
 
 
@@ -172,7 +175,8 @@ $(() => {
 
 
         //Event listener for whenever you click on a form
-        $main.on('submit', 'form', handleForm);
+        $main.on('submit', 'form.auth', handleForm);
+        $main.on('submit', 'form.new-group', handleGroupForm);
         //A function that handles form submissions and goes to the create/join group page if successful
         function handleForm() {
           if(event) event.preventDefault();
@@ -191,8 +195,35 @@ $(() => {
             }
           }).done((data) => {
             if(data.token) localStorage.setItem('token', data.token);
+            if(data.user._id) localStorage.setItem('userId', data.user._id);
+            let currentUsername = data.user.username;
+            let currentUsergroup = data.user.groupname;
             createGroup();
           }).fail(fireworksSplash);
+        }
+
+        function handleGroupForm() {
+          if(event) event.preventDefault();
+          let token = localStorage.getItem('token');
+          let $form = $(this);
+          let url = $form.attr('action');
+          let method = $form.attr('method');
+          let data = $form.serialize();
+          console.log(url, method, data);
+          $.ajax({
+            url,
+            method,
+            data,
+            beforeSend: function(jqXHR) {
+              if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
+            }
+          }).done((data) => {
+            console.log("data:", data);
+            showProfile();
+          }).fail((err) => {
+            console.log(err);
+            fireworksSplash();
+          });
         }
 
         let latLng;
@@ -219,18 +250,35 @@ $(() => {
             });
           }
 
+            // $.ajax({
+            //   method: "GET",
+            //   url: "/citymapper",
+            //   data: {
+            //     startcoord: "51.4588305,-0.1272296",
+            //     endcoord: "51.5915734,-0.015501"
+            //   }
+            // }).done((data)=>{
+            //   console.log('CITYMAPPERsuccesful');
+            //   console.log(data);
+            // });
+            //find shortest firework travel time
 
+            //We need to get all the fireworks displays and work out the total travel time per display for the total group.
+
+            //Start off with the group of ONE users... Therefore
 
             $.ajax({
               method: "GET",
-              url: "/citymapper",
+              url: "/googleMaps",
               data: {
-                startcoord: "51.4588305,-0.1272296",
-                endcoord: "51.5915734,-0.015501"
+                origins: "51.4588305,-0.1272296",
+                destinations: "51.5915734,-0.015501"
               }
             }).done((data)=>{
-              console.log('succesful');
-              console.log(data);
+              console.log('GOOGLEMAPSsuccesful');
+              let tripDistance = data.rows[0].elements[0].distance.value;
+              let tripDuration = data.rows[0].elements[0].duration.value;
+              console.log(`${tripDistance}m & ${tripDuration}s`);
             });
             //find shortest firework travel time
 
