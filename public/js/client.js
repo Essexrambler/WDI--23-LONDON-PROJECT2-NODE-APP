@@ -1,6 +1,8 @@
 $(() => {
 
   let $main = $('main');
+  let currentUsername;
+  let currentUsergroup;
 
   window.onpopstate = function() {
  $('#main_content').load(location.href);
@@ -177,6 +179,8 @@ $(() => {
             }
           }).done((data) => {
             if(data.token) localStorage.setItem('token', data.token);
+            let currentUsername = data.user.username;
+            let currentUsergroup = data.user.groupname;
             createGroup();
           }).fail(fireworksSplash);
         }
@@ -202,18 +206,35 @@ $(() => {
             });
           }
 
-          
+            // $.ajax({
+            //   method: "GET",
+            //   url: "/citymapper",
+            //   data: {
+            //     startcoord: "51.4588305,-0.1272296",
+            //     endcoord: "51.5915734,-0.015501"
+            //   }
+            // }).done((data)=>{
+            //   console.log('CITYMAPPERsuccesful');
+            //   console.log(data);
+            // });
+            //find shortest firework travel time
+
+            //We need to get all the fireworks displays and work out the total travel time per display for the total group.
+
+            //Start off with the group of ONE users... Therefore
 
             $.ajax({
               method: "GET",
-              url: "/citymapper",
+              url: "/googleMaps",
               data: {
-                startcoord: "51.4588305,-0.1272296",
-                endcoord: "51.5915734,-0.015501"
+                origins: "51.4588305,-0.1272296",
+                destinations: "51.5915734,-0.015501"
               }
             }).done((data)=>{
-              console.log('succesful');
-              console.log(data);
+              console.log('GOOGLEMAPSsuccesful');
+              let tripDistance = data.rows[0].elements[0].distance.value;
+              let tripDuration = data.rows[0].elements[0].duration.value;
+              console.log(`${tripDistance}m & ${tripDuration}s`);
             });
             //find shortest firework travel time
 
