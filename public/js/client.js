@@ -2,9 +2,6 @@ $(() => {
 
   let $main = $('main');
 
-  window.onpopstate = function() {
- $('#main_content').load(location.href);
-};
 
   function isLoggedIn() {
     return !!localStorage.getItem('token');
@@ -31,8 +28,6 @@ $(() => {
       `);$('.create').on( "click", createNewGroup);
       $('.join').on( "click", joinGroup);
       $('.profile').on( "click", showProfile);
-
-
     }
 
     function joinGroup() {
@@ -45,13 +40,13 @@ $(() => {
         <form method="post" action="/login">
         <input class="form-control u-full-width" type="text" name="username" placeholder="Enter group name">
         <button class="btn btn-primary u-full-width profile">submit</button>
+        <button class="btn btn-primary u-full-width back">Go Back</button>
         </form>
         </div>
         <div class="one-third column">&nbsp;</div>
         `);
         $('.profile').on('submit', 'form', handleForm);
-
-
+        $('.back').on( "click", createGroup);
       }
 
       function createNewGroup() {
@@ -61,15 +56,16 @@ $(() => {
           <div class="one-third column">
           <h2>Create Group</h2>
 
-          <form method="post" action="/login">
+          <form method="post" action="/users/">
           <input class="form-control u-full-width" type="text" name="username" placeholder="Group name">
           <button class="btn btn-primary u-full-width profile">submit</button>
+          <button class="btn btn-primary u-full-width back">Go Back</button>
           </form>
           </div>
           <div class="one-third column">&nbsp;</div>
           `);
           $('.profile').on('submit', 'form', handleForm);
-
+          $('.back').on( "click", createGroup);
         }
 
 
@@ -97,11 +93,15 @@ $(() => {
         and join the same group.<br>
         2.Enter the other memebers details yourself, provided you know the address of where they will be travelling from.<br>
         3. Alternatively, plan your own individual route.
-        <button class="btn btn-primary u-full-width">Find Firework displays</button>
+        <button class="btn btn-primary u-full-width find">Find Firework displays</button>
         <button class="btn btn-primary u-full-width">See selected</button>
+        <button class="btn btn-primary u-full-width create">Create Group</button>
+        <button class="btn btn-primary u-full-width join">Join Group</button>
         </div>
         <div class="one-third column">&nbsp;</div>
-        `);
+        `);$('.create').on( "click", createNewGroup);
+        $('.join').on( "click", joinGroup);
+        $('.find').on( "click", displayMap);
       }
 
     function showLoginForm() {
@@ -150,12 +150,26 @@ $(() => {
           initMap();
         }
 
+
+        function displayMap() {
+          if(event) event.preventDefault();
+          $main.html(`
+            <div id="map"></div>
+            `);
+            initMap();
+          }
+
         $('.logout').on('click', logout);
         function logout() {
           if(event) event.preventDefault();
           localStorage.removeItem('token');
           fireworksSplash();
         }
+
+
+
+
+
 
         //Event listener for whenever you click on a form
         $main.on('submit', 'form', handleForm);
@@ -183,18 +197,21 @@ $(() => {
 
         let latLng;
         var map;
+
         function initMap() {
           map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 51.5287718, lng: -0.2416791},
             zoom: 13,
             mapTypeControl: false
           });
+
           var addressAutocomplete = new google.maps.places.Autocomplete(
             document.getElementById('addressEntry'),{
               componentRestrictions: {
                 country: "GB"
               }
             });
+
             addressAutocomplete.bindTo('bounds', map);
             addressAutocomplete.addListener('place_changed', function() {
               latLng = addressAutocomplete.getPlace().geometry.location.toJSON();
@@ -202,7 +219,7 @@ $(() => {
             });
           }
 
-          
+
 
             $.ajax({
               method: "GET",
@@ -216,6 +233,8 @@ $(() => {
               console.log(data);
             });
             //find shortest firework travel time
+
+
 
         });
 
