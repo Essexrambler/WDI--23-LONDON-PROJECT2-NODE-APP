@@ -3,11 +3,15 @@ const bcrypt = require('bcrypt');
 const validator = require('validator');
 
 const userSchema = mongoose.Schema({
-username: {type:String, required: true, unique: true},
-address:  { type: String, required: true},
-passwordHash: {type:String, required: true},
-groupname: String,
-selectedFireworkDisplayId: String
+  username: {type:String, required: true, unique: true},
+  location: {
+    lat: Number,
+    lng: Number
+  },
+  address:  { type: String, required: true},
+  passwordHash: {type:String, required: true},
+  groupname: String,
+  selectedFireworkDisplayId: String
 });
 
 function setPassword(value){
