@@ -117,6 +117,7 @@ $(() => {
           }).fail(fireworksSplash);
         }
 
+        let latLng;
         var map;
         function initMap() {
           map = new google.maps.Map(document.getElementById('map'), {
@@ -132,10 +133,25 @@ $(() => {
             });
             addressAutocomplete.bindTo('bounds', map);
             addressAutocomplete.addListener('place_changed', function() {
-              let latLng = addressAutocomplete.getPlace().geometry.location.toJSON();
+              latLng = addressAutocomplete.getPlace().geometry.location.toJSON();
               console.log(latLng);
             });
           }
+
+          
+
+            $.ajax({
+              method: "GET",
+              url: "/citymapper",
+              data: {
+                startcoord: "51.4588305,-0.1272296",
+                endcoord: "51.5915734,-0.015501"
+              }
+            }).done((data)=>{
+              console.log('succesful');
+              console.log(data);
+            });
+            //find shortest firework travel time
 
         });
 
