@@ -4,6 +4,7 @@ $(() => {
   let currentUsername;
   let currentUsergroup;
   let currentUserId;
+  let fireworksData;
 
   function isLoggedIn() {
     return !!localStorage.getItem('token');
@@ -237,20 +238,44 @@ $(() => {
     });
   }
 
-  $.ajax({
-    method: "GET",
-    url: "/googleMaps",
-    data: {
-      origins: "51.5915734,-0.025501",
-      destinations: "51.5915734,-0.015501"
-    }
-  }).done((data)=>{
-    console.log('GOOGLEMAPSsuccesful');
-    let tripDistance = data.rows[0].elements[0].distance.value;
-    let tripDuration = data.rows[0].elements[0].duration.value;
-    console.log(`${tripDistance}m & ${tripDuration}s`);
-  });
-  //find shortest firework travel time
+  function getFireworksDisplayData() {
+    $.ajax({
+      method: "GET",
+      url: "/fireworks",
+    }).done((data) => {
+      fireworksData = data;
+      getUserDisplayTravelTimes();
+    });
+  }
+  getFireworksDisplayData();
+
+  function getCurrentUser () {
+    $.ajax({
+      method: "GET",
+      url: "/users/:id",
+    }).done((data) => {
+      fireworksData = data;
+    });
+  }
+  // getCurrentUser();
+
+  function getUserDisplayTravelTimes () {
+    console.log(fireworksData);
+    $.ajax({
+      method: "GET",
+      url: "/googleMaps",
+      data: {
+        origins: "51.5915734,-0.025501",
+        destinations: "51.5915734,-0.015501"
+      }
+    }).done((data)=>{
+      console.log('GOOGLEMAPSsuccesful');
+      let tripDistance = data.rows[0].elements[0].distance.value;
+      let tripDuration = data.rows[0].elements[0].duration.value;
+      console.log(`${tripDistance}m & ${tripDuration}s`);
+    });
+  }
+
 
 });
 

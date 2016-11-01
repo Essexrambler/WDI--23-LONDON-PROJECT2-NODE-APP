@@ -35,7 +35,7 @@ router.route('/login')
   .post(authControllers.login);
 
 router.route('/fireworks')
-  .all(secureRoute)
+//  .all(secureRoute)
   .get(fireworksController.index)
   .post(fireworksController.create);
 
