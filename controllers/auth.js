@@ -16,9 +16,7 @@ function register(req, res){
 }
 
 function login(req, res){
-  User.findOne({ $or: [
-    { username: req.body.username }
-  ]}, (err, user) => {
+  User.findOne({ username: req.body.username }, (err, user) => {
     if (err) return res.status(500).json({ message: "Something went wrong." });
     if (!user || !user.validatePassword(req.body.password)) {
       return res.status(401).json({ message: "Unauthorized."
