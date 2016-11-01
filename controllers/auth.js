@@ -17,7 +17,6 @@ function register(req, res){
 
 function login(req, res){
   User.findOne({ $or: [
-    { email: req.body.email },
     { username: req.body.username }
   ]}, (err, user) => {
     if (err) return res.status(500).json({ message: "Something went wrong." });
