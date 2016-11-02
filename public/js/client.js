@@ -344,11 +344,27 @@ $(() => {
         currentusertraveltimes.push(values);
         if(counter === numberOfDisplays) {
             console.log(currentusertraveltimes);
-          //next function which is an AJAX push to USER of this array.
+            putCurrentUserTravelTimesIntoArray();
         }
 //        console.log(`${tripDistance}m & ${tripDuration}s for display ID ${display._id}`);
       });
     });
+  }
+
+  function putCurrentUserTravelTimesIntoArray () {
+    let token = localStorage.getItem('token');
+    $.ajax({
+      method: "PUT",
+      url: `/users/${localStorage.getItem('userId')}`,
+      data:
+        { currentusertraveltimes: currentusertraveltimes},
+      beforeSend: function(jqXHR) {
+        if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
+      }
+    }).done((data) => {
+      console.log('user array successfully PUT into database');
+    });
+
   }
 
   getFireworksDisplayData();
