@@ -41,7 +41,7 @@ router.route('/fireworks')
 
 
 router.route('/fireworks/:id')
-  .get(secureRoute, fireworksController.show);
+  .get(fireworksController.show);
 
 
 router.route('/users')

@@ -15,7 +15,7 @@ function fireworksCreate(req, res) {
 }
 
 function fireworksShow(req, res) {
-  firework.findById(req.params.id, (err, fireworks) => {
+  Firework.findById(req.params.id, (err, fireworks) => {
     if(err) res.status(500).json({error: err});
     res.json(fireworks);
   });

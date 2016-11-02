@@ -15,6 +15,7 @@ $(() => {
   let usersInMyGroup =[];
   let totalTravelimesOfAllDisplays = [];
   let totalTravelTimesForGroup = [];
+  let currentDisplayFullData =[];
 
   function isLoggedIn() {
     return !!localStorage.getItem('token');
@@ -61,7 +62,7 @@ $(() => {
 
     if (match === true) {
       alert("SUCCESS!!!");
-      console.log("check", data);
+      //console.log("check", data);
       $.ajax({
         url:`/users/${userId}`,
         method:"put",
@@ -70,7 +71,7 @@ $(() => {
           if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
           }
       }).done((data) => {
-       console.log(data);
+       //console.log(data);
        currentUserData = data;
        showProfile();
     });
@@ -159,6 +160,7 @@ $(() => {
   }
 
   function showProfile() {
+    getFireworksDisplayData();
     if(event) event.preventDefault();
     $main.html(`
       <div class="one-third column">&nbsp;</div>
@@ -175,25 +177,82 @@ $(() => {
       <div class="one-third column">&nbsp;</div>
     `);
     $('.create').on('click', createGroup);
-    $('.displayfirework').on('click', findDisplay);
+    $('.displayfirework').on('click', fireworkListingsPage);
   }
 
-  function findDisplay () {
+  function fireworkListingsPage () {
+    let finalDisplayIndex = 0;
+    //Get all fireworks information for the fireworks ID at our index 0... note that this is NOT the index within fireworks itself.
+    let currentDisplayID = totalTravelTimesForGroup[0].displayid;
+
+    $.ajax({
+      method: 'get',
+      url: `/fireworks/${currentDisplayID}`
+    }).done((data) => {
+      currentDisplayFullData = data;
+      console.log(currentDisplayFullData);
+
+    //console.log('Initial LatLng', initialLat, initialLng);
+
     if(event) event.preventDefault();
-    let userId = localStorage.getItem('userId');
-      $main.html(`
-        <div class="one-third column">&nbsp;</div>
-        <div class="one-third column">
-          <h2>Find A Display</h2>
-          <img style = "border:2px solid white" src ="/images/FE-Heart-Fireworks.png" height="200" width="200">
-          <button class="btn btn-primary u-full-width display">Find A Display</button>
-          <button class="btn btn-primary u-full-width profile">Back to profile</button>
-        </div>
-        <div class="one-third column">&nbsp;</div>
-        `);
-    $('.display').on('submit', 'form', findDisplay);
-    $('.profile').on( "click", showProfile);
-  }
+    $main.html(`
+      <div class="one-third column">&nbsp;</div>
+      <div class="one-third column">
+        <h4>${currentDisplayFullData.title}</h4>
+        <div id="map">
+      </div>
+
+      <p>Location: ${currentDisplayFullData.locationName}</p>
+      <p>Opens at: ${currentDisplayFullData.openTime}</p>
+      <p>Display starts at: ${currentDisplayFullData.startTime}</p>
+      <p>Adult cost from: £${currentDisplayFullData.adultCostFrom}</p>
+
+      <div class="one-third column">&nbsp;</div>`);
+
+      let map;
+
+      function initMap() {
+
+      var styles = [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#FFFFFF"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"blue"},{"lightness":17}]}, {"featureType":"poi.park","elementType":"geometry","stylers":[{"color":"#e74b12"},{"lightness":17}]}];
+
+      var image = './images/fireworks100.png';
+
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: currentDisplayFullData.location.lat, lng: currentDisplayFullData.location.lng },
+        styles: styles,
+        mapTypeControl: false,
+        zoom: 12
+        });
+
+      let marker = new google.maps.Marker({
+        map: map,
+        position: { lat: currentDisplayFullData.location.lat, lng: currentDisplayFullData.location.lng },
+        title: `${currentDisplayFullData.locationName}`,
+        icon: image,
+        animation: google.maps.Animation.DROP,
+      });
+
+    }
+      initMap();
+  });
+}
+
+  // function findDisplay () {
+  //   if(event) event.preventDefault();
+  //   let userId = localStorage.getItem('userId');
+  //     $main.html(`
+  //       <div class="one-third column">&nbsp;</div>
+  //       <div class="one-third column">
+  //         <h2>Find A Display</h2>
+  //         <img style = "border:2px solid white" src ="/images/FE-Heart-Fireworks.png" height="200" width="200">
+  //         <button class="btn btn-primary u-full-width display">Find A Display</button>
+  //         <button class="btn btn-primary u-full-width profile">Back to profile</button>
+  //       </div>
+  //       <div class="one-third column">&nbsp;</div>
+  //       `);
+  //   $('.display').on('submit', 'form', findDisplay);
+  //   $('.profile').on( "click", showProfile);
+  // }
 
   function showLoginForm() {
     if(event) event.preventDefault();
@@ -272,7 +331,7 @@ $(() => {
     let url = $form.attr('action');
     let method = $form.attr('method');
     let data = $form.serialize();
-    console.log(url, method, data);
+    //console.log(url, method, data);
     $.ajax({
       url,
       method,
@@ -297,7 +356,7 @@ $(() => {
     let url = $form.attr('action');
     let method = $form.attr('method');
     let data = $form.serialize();
-    console.log(url, method, data);
+    //console.log(url, method, data);
     $.ajax({
       url,
       method,
@@ -322,7 +381,7 @@ $(() => {
     let url = $form.attr('action');
     let method = $form.attr('method');
     let data = $form.serialize();
-    console.log(url, method, data);
+    //console.log(url, method, data);
     $.ajax({
       url,
       method,
@@ -331,10 +390,10 @@ $(() => {
         if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
       }
     }).done((data) => {
-      console.log("data:", data);
+      //console.log("data:", data);
       showProfile();
     }).fail((err) => {
-      console.log(err);
+      //console.log(err);
       fireworksSplash();
     });
   }
@@ -404,7 +463,7 @@ $(() => {
         }
       }).done((data) => {
         counter++;
-        console.log(display);
+        //console.log(display);
         let tripDistance = data.rows[0].elements[0].distance.value;
         let tripDuration = data.rows[0].elements[0].duration.value;
         let individualDisplayId = display._id;
@@ -415,7 +474,7 @@ $(() => {
         };
         currentusertraveltimes.push(values);
         if(counter === numberOfDisplays) {
-            console.log(currentusertraveltimes);
+            //console.log(currentusertraveltimes);
             putCurrentUserTravelTimesIntoArray();
         }
 //        console.log(`${tripDistance}m & ${tripDuration}s for display ID ${display._id}`);
@@ -433,14 +492,14 @@ $(() => {
         if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
       }
     }).done((data) => {
-      console.log('user array successfully PUT into database');
+      //console.log('user array successfully PUT into database');
       putUsersOfGroupInAnArray();
     });
   }
 
   function putUsersOfGroupInAnArray () {
     let token = localStorage.getItem('token');
-    console.log(currentUsergroup);
+    //console.log(currentUsergroup);
     $.ajax({
       method: "GET",
       url: `/group/${currentUsergroup}`,
@@ -449,6 +508,7 @@ $(() => {
       }
     }).done((data) => {
       usersInMyGroup = data;
+      console.log(usersInMyGroup);
       calculateTotalTravelTimesPerDisplay();
     });
   }
@@ -472,10 +532,8 @@ $(() => {
     totalTravelTimesForGroup.sort((a, b) => {
       return a.totalTime - b.totalTime;
     });
-    console.log(totalTravelTimesForGroup);
   }
 
-  getFireworksDisplayData();
 
 });
 
