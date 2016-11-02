@@ -4,6 +4,10 @@ $(() => {
   let currentUsername;
   let currentUsergroup;
   let currentUserId;
+  let fireworksData;
+  let currentuserlat;
+  let currentuserlng;
+  let currentusertraveltimes =[];
 
 
   function isLoggedIn() {
@@ -337,20 +341,81 @@ $(() => {
     });
   }
 
-  $.ajax({
-    method: "GET",
-    url: "/googleMaps",
-    data: {
-      origins: "51.5915734,-0.025501",
-      destinations: "51.5915734,-0.015501"
-    }
-  }).done((data)=>{
-    console.log('GOOGLEMAPSsuccesful');
-    let tripDistance = data.rows[0].elements[0].distance.value;
-    let tripDuration = data.rows[0].elements[0].duration.value;
-    console.log(`${tripDistance}m & ${tripDuration}s`);
-  });
-  //find shortest firework travel time
+  function getFireworksDisplayData() {
+    $.ajax({
+      method: "GET",
+      url: "/fireworks",
+    }).done((data) => {
+      fireworksData = data;
+      getCurrentUser();
+    });
+  }
+
+  function getCurrentUser () {
+    let token = localStorage.getItem('token');
+    $.ajax({
+      method: "GET",
+      url: `/users/${localStorage.getItem('userId')}`,
+      beforeSend: function(jqXHR) {
+        if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
+      }
+    }).done((data) => {
+      currentuserlat = data.location.lat;
+      currentuserlng = data.location.lng;
+      getUserDisplayTravelTimes();
+    });
+  }
+
+  function getUserDisplayTravelTimes() {
+    let numberOfDisplays = fireworksData.length;
+    let counter = 0;
+    fireworksData.forEach(function(display) {
+      $.ajax({
+        method: "GET",
+        url: "/googlemaps",
+        data: {
+          origins: `${currentuserlat},${currentuserlng}`,
+          destinations: `${display.location.lat},${display.location.lng}`
+        }
+      }).done((data) => {
+        counter++;
+        console.log(display);
+        let tripDistance = data.rows[0].elements[0].distance.value;
+        let tripDuration = data.rows[0].elements[0].duration.value;
+        let individualDisplayId = display._id;
+        let values = {
+          displayid: individualDisplayId,
+          usertraveltime: tripDuration,
+          userdistance: tripDistance
+        };
+        currentusertraveltimes.push(values);
+        if(counter === numberOfDisplays) {
+            console.log(currentusertraveltimes);
+            putCurrentUserTravelTimesIntoArray();
+        }
+//        console.log(`${tripDistance}m & ${tripDuration}s for display ID ${display._id}`);
+      });
+    });
+  }
+
+  function putCurrentUserTravelTimesIntoArray () {
+    let token = localStorage.getItem('token');
+    $.ajax({
+      method: "PUT",
+      url: `/users/${localStorage.getItem('userId')}`,
+      data:
+        { currentusertraveltimes: currentusertraveltimes},
+      beforeSend: function(jqXHR) {
+        if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
+      }
+    }).done((data) => {
+      console.log('user array successfully PUT into database');
+    });
+
+  }
+
+  getFireworksDisplayData();
+
 
 });
 

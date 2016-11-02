@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Firework = require('../models/firework');
 
-mongoose.connect('mongodb://localhost/fireworks');
+mongoose.connect('mongodb://localhost/firestarters');
 
 Firework.collection.drop();
 
