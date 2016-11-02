@@ -85,7 +85,7 @@ $(() => {
     $main.html(`
       <div class="one-third column">&nbsp;</div>
       <div class="one-third column">
-        <h2>Create Group</h2>
+        <h2>Create or Join Group</h2>
 
         <button class="btn btn-primary u-full-width create">Create Group</button>
         <button class="btn btn-primary u-full-width join">Join Group</button>
@@ -110,6 +110,7 @@ $(() => {
           <input class="form-control u-full-width" type="text" name="groupname" placeholder="Enter group name">
           <button class="btn btn-primary u-full-width profile">submit</button>
           <button class="btn btn-primary u-full-width back">Back</button>
+          <button class="btn btn-primary u-full-width profile">Go To Profile</button>
         </form>
       </div>
       <div class="one-third column">&nbsp;</div>
@@ -131,6 +132,8 @@ $(() => {
           <input class="form-control u-full-width" type="text" name="groupname" placeholder="Group name">
           <button class="btn btn-primary u-full-width profile">submit</button>
           <button class="btn btn-primary u-full-width back">Back</button>
+          <button class="btn btn-primary u-full-width profile">Go to Profile</button>
+
         </form>
       </div>
       <div class="one-third column">&nbsp;</div>
@@ -141,6 +144,7 @@ $(() => {
   }
 
   function fireworksSplash() {
+    if(event) event.preventDefault();
     $main.html(`
       <div class="one-third column">&nbsp;</div>
       <div class="one-third column">
@@ -163,23 +167,33 @@ $(() => {
         <p> Two ways to use this App.
         1. Give your group name to your friends. So they can register
         and join the same group.<br>
-        2.Enter the other memebers details yourself, provided you know the address of where they will be travelling from.<br>
-        3. Alternatively, plan your own individual route.
-        <button class="btn btn-primary u-full-width">Find Firework displays</button>
+        2. Alternatively, plan your own individual route.
+        <button class="btn btn-primary u-full-width displayfirework">Find Firework displays</button>
         <button class="btn btn-primary u-full-width">See selected</button>
-        <button class="btn btn-primary u-full-width create">Create Group</button>
-        <button class="btn btn-primary u-full-width join">Join Group</button>
+        <button class="btn btn-primary u-full-width create">Create or Join Group</button>
       </div>
       <div class="one-third column">&nbsp;</div>
     `);
     $('.create').on('click', createGroup);
-    $('.join').on('click', joinGroup);
+    $('.displayfirework').on('click', findDisplay);
   }
 
-
-
-
-
+  function findDisplay () {
+    if(event) event.preventDefault();
+    let userId = localStorage.getItem('userId');
+      $main.html(`
+        <div class="one-third column">&nbsp;</div>
+        <div class="one-third column">
+          <h2>Find A Display</h2>
+          <img style = "border:2px solid white" src ="/images/FE-Heart-Fireworks.png" height="200" width="200">
+          <button class="btn btn-primary u-full-width display">Find A Display</button>
+          <button class="btn btn-primary u-full-width profile">Back to profile</button>
+        </div>
+        <div class="one-third column">&nbsp;</div>
+        `);
+    $('.display').on('submit', 'form', findDisplay);
+    $('.profile').on( "click", showProfile);
+  }
 
   function showLoginForm() {
     if(event) event.preventDefault();
@@ -195,10 +209,12 @@ $(() => {
             <input class="form-control u-full-width" type="password" name="password" placeholder="Password">
           </div>
           <button class="btn btn-primary u-full-width">Login</button>
+          <button class="btn btn-primary u-full-width back">Back</button>
         </form>
       </div>
       <div class="one-third column">&nbsp;</div>
     `);
+    $('.back').on('click', fireworksSplash);
   }
 
   function showRegisterForm() {
@@ -225,10 +241,12 @@ $(() => {
             <input type="hidden" name="location[lng]">
           </div>
           <button class="btn btn-primary u-full-width">Register</button>
+          <button class="btn btn-primary u-full-width back">Back</button>
         </form>
       </div>
       <div class="one-third column">&nbsp;</div>
     `);
+    $('.back').on('click', fireworksSplash);
     initAutocomplete();
   }
 

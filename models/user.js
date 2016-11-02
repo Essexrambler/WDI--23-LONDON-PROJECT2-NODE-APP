@@ -13,9 +13,9 @@ const userSchema = mongoose.Schema({
     userdistance: Number,
     usertraveltime: Number
   }],
-  address:  { type: String, required: true},
+  address:      { type: String, required: true},
   passwordHash: {type:String, required: true},
-  groupname: String,
+  groupname:    String,
   selectedFireworkDisplayId: String
 });
 
