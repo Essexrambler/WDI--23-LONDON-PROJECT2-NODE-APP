@@ -6,11 +6,15 @@ $(() => {
   let currentUserId;
   let currentUserData;
   let fireworksData;
+  //The current logged in user's lattitude.
   let currentuserlat;
+  //The current logged in user's lattitude.
   let currentuserlng;
   let currentusertraveltimes =[];
+  //Users who match on groupname (An object/array).
   let usersInMyGroup =[];
-
+  let totalTravelimesOfAllDisplays = [];
+  let totalTravelTimesForGroup = [];
 
   function isLoggedIn() {
     return !!localStorage.getItem('token');
@@ -406,8 +410,7 @@ $(() => {
     $.ajax({
       method: "PUT",
       url: `/users/${localStorage.getItem('userId')}`,
-      data:
-        { currentusertraveltimes: currentusertraveltimes},
+      data: { currentusertraveltimes: currentusertraveltimes },
       beforeSend: function(jqXHR) {
         if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
       }
@@ -428,12 +431,33 @@ $(() => {
       }
     }).done((data) => {
       usersInMyGroup = data;
-      console.log(usersInMyGroup);
+      calculateTotalTravelTimesPerDisplay();
     });
   }
 
-  getFireworksDisplayData();
+  function calculateTotalTravelTimesPerDisplay () {
+    let displayData = usersInMyGroup[0].currentusertraveltimes;
+    let numberOfDisplays = displayData.length;
 
+    for(let i=0;i<numberOfDisplays;i++) {
+      totalTravelTimePerDisplay = 0;
+      for(let j=0;j<usersInMyGroup.length;j++) {
+        totalTravelTimePerDisplay += usersInMyGroup[j].currentusertraveltimes[i].usertraveltime;
+      }
+      totalTravelTimesForGroup[i] = {
+        totalTime: totalTravelTimePerDisplay,
+        avgTime: Math.round(totalTravelTimePerDisplay / usersInMyGroup.length),
+        displayid: displayData[i].displayid
+      };
+    }
+
+    totalTravelTimesForGroup.sort((a, b) => {
+      return a.totalTime - b.totalTime;
+    });
+    console.log(totalTravelTimesForGroup);
+  }
+
+  getFireworksDisplayData();
 
 });
 

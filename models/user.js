@@ -8,7 +8,11 @@ const userSchema = mongoose.Schema({
     lat: Number,
     lng: Number
   },
-  currentusertraveltimes: Array,
+  currentusertraveltimes: [{
+    displayid: String,
+    userdistance: Number,
+    usertraveltime: Number
+  }],
   address:  { type: String, required: true},
   passwordHash: {type:String, required: true},
   groupname: String,
