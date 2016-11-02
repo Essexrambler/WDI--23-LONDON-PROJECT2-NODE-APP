@@ -5,13 +5,14 @@ $(() => {
   let currentUsergroup;
   let currentUserId;
 
+
   function isLoggedIn() {
     return !!localStorage.getItem('token');
   }
 
 
   if(isLoggedIn()) {
-    createGroup();
+    showProfile();
   } else {
     fireworksSplash();
   }
@@ -38,8 +39,12 @@ $(() => {
   }
 
   function checkForExistingGroup(users, groupName){
+  let userId = localStorage.getItem('userId');
+   let token = localStorage.getItem('token');
+   let $form = $(".join-group");
+   let data = $form.serialize();
+   let match = false;
 
-    let match = false;
     users.forEach((user) => {
       if(user.groupname == groupName) {
         match = true;
@@ -48,23 +53,23 @@ $(() => {
 
     if (match === true) {
       alert("SUCCESS!!!");
-
-      let userId = localStorage.getItem('userId');
-
+      console.log("check", data);
       $.ajax({
-        url:"/users/${userId}",
+        url:`/users/${userId}`,
         method:"put",
-
-      });
-      // make an post request ajax call
-      // get id from local storage
-      // get token
-      // data : { groupname: groupnamehere }
-      //
-    } else {
+        data,
+        beforeSend: function(jqXHR) {
+          if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
+          }
+      }).done((data) => {
+       console.log(data);
+       showProfile();
+    });
+  } else {
       alert("Group name not found, please try again");
     }
   }
+
 
   function createGroup() {
     if(event) event.preventDefault();
@@ -75,7 +80,7 @@ $(() => {
 
         <button class="btn btn-primary u-full-width create">Create Group</button>
         <button class="btn btn-primary u-full-width join">Join Group</button>
-        <button class="btn btn-primary u-full-width profile">Got No Friends</button>
+        <button class="btn btn-primary u-full-width profile">Go to Profile</button>
       </div>
       <div class="one-third column">&nbsp;</div>
     `);
@@ -86,19 +91,22 @@ $(() => {
 
   function joinGroup() {
     if(event) event.preventDefault();
+    let userId = localStorage.getItem('userId');
     $main.html(`
       <div class="one-third column">&nbsp;</div>
       <div class="one-third column">
         <h2>Join Group</h2>
 
-        <form method="post" action="/login" class="join-group">
+        <form method="put" action="/users/${userId}" class="join-group">
           <input class="form-control u-full-width" type="text" name="groupname" placeholder="Enter group name">
           <button class="btn btn-primary u-full-width profile">submit</button>
+          <button class="btn btn-primary u-full-width back">Back</button>
         </form>
       </div>
       <div class="one-third column">&nbsp;</div>
     `);
     $('.profile').on('submit', 'form', handleGroupForm);
+    $('.back').on('click', createGroup);
   }
 
   function createNewGroup() {
@@ -108,16 +116,18 @@ $(() => {
     $main.html(`
       <div class="one-third column">&nbsp;</div>
       <div class="one-third column">
-        <h2>Create Group</h2>
+        <h2>Create New Group</h2>
 
         <form method="put" action="/users/${userId}" class="new-group">
           <input class="form-control u-full-width" type="text" name="groupname" placeholder="Group name">
           <button class="btn btn-primary u-full-width profile">submit</button>
+          <button class="btn btn-primary u-full-width back">Back</button>
         </form>
       </div>
       <div class="one-third column">&nbsp;</div>
     `);
     $('.profile').on('submit', 'form', handleGroupForm);
+    $('.back').on('click', createGroup);
 
   }
 
@@ -148,10 +158,19 @@ $(() => {
         3. Alternatively, plan your own individual route.
         <button class="btn btn-primary u-full-width">Find Firework displays</button>
         <button class="btn btn-primary u-full-width">See selected</button>
+        <button class="btn btn-primary u-full-width create">Create Group</button>
+        <button class="btn btn-primary u-full-width join">Join Group</button>
       </div>
       <div class="one-third column">&nbsp;</div>
     `);
+    $('.create').on('click', createGroup);
+    $('.join').on('click', joinGroup);
   }
+
+
+
+
+
 
   function showLoginForm() {
     if(event) event.preventDefault();
@@ -159,7 +178,7 @@ $(() => {
       <div class="one-third column">&nbsp;</div>
       <div class="one-third column">
         <h2>Login</h2>
-        <form method="post" action="/login" class="auth">
+        <form method="post" action="/login" class="login">
           <div class="form-group">
             <input class="form-control u-full-width" type="text" name="username" placeholder="Username">
           </div>
@@ -209,11 +228,13 @@ $(() => {
   function logout() {
     if(event) event.preventDefault();
     localStorage.removeItem('token');
+    localStorage.removeItem('userId');
     fireworksSplash();
   }
 
   //Event listener for whenever you click on a form
   $main.on('submit', 'form.auth', handleForm);
+  $main.on('submit', 'form.login', handleLoginForm);
   $main.on('submit', 'form.new-group', handleGroupForm);
   //A function that handles form submissions and goes to the create/join group page if successful
   function handleForm() {
@@ -240,6 +261,32 @@ $(() => {
       createGroup();
     }).fail(fireworksSplash);
   }
+
+  function handleLoginForm() {
+    if(event) event.preventDefault();
+    let token = localStorage.getItem('token');
+    let userId = localStorage.getItem('userId');
+    let $form = $(this);
+    let url = $form.attr('action');
+    let method = $form.attr('method');
+    let data = $form.serialize();
+    console.log(url, method, data);
+    $.ajax({
+      url,
+      method,
+      data,
+      beforeSend: function(jqXHR) {
+        if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
+      }
+    }).done((data) => {
+      if(data.token) localStorage.setItem('token', data.token);
+      if(data.user._id) localStorage.setItem('userId', data.user._id);
+      let currentUsername = data.user.username;
+      let currentUsergroup = data.user.groupname;
+      showProfile();
+    }).fail(fireworksSplash);
+  }
+
 
   function handleGroupForm() {
     if(event) event.preventDefault();
