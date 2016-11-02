@@ -7,7 +7,7 @@ $(() => {
   let fireworksData;
   let currentuserlat;
   let currentuserlng;
-  let currentusertraveltimes;
+  let currentusertraveltimes =[];
 
   function isLoggedIn() {
     return !!localStorage.getItem('token');
@@ -320,6 +320,8 @@ $(() => {
   }
 
   function getUserDisplayTravelTimes() {
+    let numberOfDisplays = fireworksData.length;
+    let counter = 0;
     fireworksData.forEach(function(display) {
       $.ajax({
         method: "GET",
@@ -329,16 +331,27 @@ $(() => {
           destinations: `${display.location.lat},${display.location.lng}`
         }
       }).done((data) => {
-        console.log(data);
-//      let tripDistance = data.rows[0].elements[0].distance.value;
-//      let tripDuration = data.rows[0].elements[0].duration.value;
-//      console.log(`${tripDistance}m & ${tripDuration}s`);
+        counter++;
+        console.log(display);
+        let tripDistance = data.rows[0].elements[0].distance.value;
+        let tripDuration = data.rows[0].elements[0].duration.value;
+        let individualDisplayId = display._id;
+        let values = {
+          displayid: individualDisplayId,
+          usertraveltime: tripDuration,
+          userdistance: tripDistance
+        };
+        currentusertraveltimes.push(values);
+        if(counter === numberOfDisplays) {
+            console.log(currentusertraveltimes);
+          //next function which is an AJAX push to USER of this array.
+        }
+//        console.log(`${tripDistance}m & ${tripDuration}s for display ID ${display._id}`);
       });
     });
   }
 
   getFireworksDisplayData();
-
 
 
 });
