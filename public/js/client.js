@@ -5,6 +5,9 @@ $(() => {
   let currentUsergroup;
   let currentUserId;
   let fireworksData;
+  let currentuserlat;
+  let currentuserlng;
+  let currentusertraveltimes;
 
   function isLoggedIn() {
     return !!localStorage.getItem('token');
@@ -297,10 +300,9 @@ $(() => {
       url: "/fireworks",
     }).done((data) => {
       fireworksData = data;
-      getUserDisplayTravelTimes();
+      getCurrentUser();
     });
   }
-  getFireworksDisplayData();
 
   function getCurrentUser () {
     let token = localStorage.getItem('token');
@@ -311,27 +313,32 @@ $(() => {
         if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
       }
     }).done((data) => {
-      console.log(data);
+      currentuserlat = data.location.lat;
+      currentuserlng = data.location.lng;
+      getUserDisplayTravelTimes();
     });
   }
-  getCurrentUser();
 
-  function getUserDisplayTravelTimes () {
-    console.log(fireworksData);
-    $.ajax({
-      method: "GET",
-      url: "/googleMaps",
-      data: {
-        origins: "51.5915734,-0.025501",
-        destinations: "51.5915734,-0.015501"
-      }
-    }).done((data)=>{
-      console.log('GOOGLEMAPSsuccesful');
-      let tripDistance = data.rows[0].elements[0].distance.value;
-      let tripDuration = data.rows[0].elements[0].duration.value;
-      console.log(`${tripDistance}m & ${tripDuration}s`);
+  function getUserDisplayTravelTimes() {
+    fireworksData.forEach(function(display) {
+      $.ajax({
+        method: "GET",
+        url: "/googlemaps",
+        data: {
+          origins: `${currentuserlat},${currentuserlng}`,
+          destinations: `${display.location.lat},${display.location.lng}`
+        }
+      }).done((data) => {
+        console.log(data);
+//      let tripDistance = data.rows[0].elements[0].distance.value;
+//      let tripDuration = data.rows[0].elements[0].duration.value;
+//      console.log(`${tripDistance}m & ${tripDuration}s`);
+      });
     });
   }
+
+  getFireworksDisplayData();
+
 
 
 });

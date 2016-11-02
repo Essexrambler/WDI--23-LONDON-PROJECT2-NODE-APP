@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const fireworksController = require('../controllers/fireworks.js');
 const citymapperController = require('../controllers/citymapper.js');
-const googlemapsController = require('../controllers/googleMaps.js');
+const googlemapsController = require('../controllers/googlemaps.js');
 const secret = require('./tokens').secret;
 const jwt = require('jsonwebtoken');
 const usersControllers = require('../controllers/users');
@@ -21,7 +21,7 @@ function secureRoute(req, res, next) {
 router.route('/citymapper')
   .get(citymapperController.travelTime);
 
-router.route('/googleMaps')
+router.route('/googlemaps')
   .get(googlemapsController.googleTravelTime);
 
 router.route('/register')
