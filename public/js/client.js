@@ -198,16 +198,17 @@ $(() => {
     $main.html(`
       <div class="one-third column">&nbsp;</div>
       <div class="one-third column">
+        <button class="btn btn-primary u-full-width back">Back</button>
         <h4>${currentDisplayFullData.title}</h4>
         <div id="map">
       </div>
-
-      <p>Location: ${currentDisplayFullData.locationName}</p>
-      <p>Opens at: ${currentDisplayFullData.openTime}</p>
-      <p>Display starts at: ${currentDisplayFullData.startTime}</p>
-      <p>Adult cost from: £${currentDisplayFullData.adultCostFrom}</p>
-
+        <p>Location: ${currentDisplayFullData.locationName}</p>
+        <p>Opens at: ${currentDisplayFullData.openTime}</p>
+        <p>Display starts at: ${currentDisplayFullData.startTime}</p>
+        <p>Adult cost from: £${currentDisplayFullData.adultCostFrom}</p>
       <div class="one-third column">&nbsp;</div>`);
+      $('.back').on('click', showProfile);
+
 
       let map;
 
