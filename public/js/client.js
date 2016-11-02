@@ -4,10 +4,12 @@ $(() => {
   let currentUsername;
   let currentUsergroup;
   let currentUserId;
+  let currentUserData;
   let fireworksData;
   let currentuserlat;
   let currentuserlng;
   let currentusertraveltimes =[];
+  let usersInMyGroup =[];
 
 
   function isLoggedIn() {
@@ -23,12 +25,10 @@ $(() => {
 
   $main.on('submit', 'form.join-group', getUsers);
 
-
-
   function getUsers(event) {
     if(event) event.preventDefault();
     let form = $(this);
-    let groupName = form.find('input[name="groupname"]').val();
+    currentUsergroup = form.find('input[name="groupname"]').val();
     let token = localStorage.getItem('token');
     $.ajax({
       url: "/users",
@@ -37,12 +37,12 @@ $(() => {
         if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
       }
     }).done((users) => {
-      checkForExistingGroup(users, groupName);
+      checkForExistingGroup(users, currentUsergroup);
       // console.log(users);
     });
   }
 
-  function checkForExistingGroup(users, groupName){
+  function checkForExistingGroup(users, currentUsergroup){
   let userId = localStorage.getItem('userId');
    let token = localStorage.getItem('token');
    let $form = $(".join-group");
@@ -50,7 +50,7 @@ $(() => {
    let match = false;
 
     users.forEach((user) => {
-      if(user.groupname == groupName) {
+      if(user.groupname == currentUsergroup) {
         match = true;
       }
     });
@@ -67,6 +67,7 @@ $(() => {
           }
       }).done((data) => {
        console.log(data);
+       currentUserData = data;
        showProfile();
     });
   } else {
@@ -362,6 +363,8 @@ $(() => {
     }).done((data) => {
       currentuserlat = data.location.lat;
       currentuserlng = data.location.lng;
+      currentUserData = data;
+      currentUsergroup = data.groupname;
       getUserDisplayTravelTimes();
     });
   }
@@ -410,8 +413,23 @@ $(() => {
       }
     }).done((data) => {
       console.log('user array successfully PUT into database');
+      putUsersOfGroupInAnArray();
     });
+  }
 
+  function putUsersOfGroupInAnArray () {
+    let token = localStorage.getItem('token');
+    console.log(currentUsergroup);
+    $.ajax({
+      method: "GET",
+      url: `/group/${currentUsergroup}`,
+      beforeSend: function(jqXHR) {
+        if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
+      }
+    }).done((data) => {
+      usersInMyGroup = data;
+      console.log(usersInMyGroup);
+    });
   }
 
   getFireworksDisplayData();

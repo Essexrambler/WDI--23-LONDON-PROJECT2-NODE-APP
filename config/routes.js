@@ -49,11 +49,15 @@ router.route('/users')
   .get(usersControllers.index)
   .post(usersControllers.create);
 
+router.route('/group/:groupname')
+  .get(usersControllers.group);
+
 router.route('/users/:id')
   .all(secureRoute)
   .put(usersControllers.update)
   .get(usersControllers.show)
   .delete(usersControllers.delete);
+
 
 
 module.exports = router;

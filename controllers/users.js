@@ -15,6 +15,13 @@ function usersShow(req, res) {
   });
 }
 
+function usersByGroupName(req, res) {
+  User.find({ groupname: req.params.groupname }, (err, users) => {
+    if(err) return res.status(500).json({message: "error"});
+    return res.status(200).json(users);
+  });
+}
+
 function usersCreate(req, res) {
   User.create((err, user) => {
     if (err) return res.status(500).json({ message: "Error" });
@@ -41,5 +48,6 @@ module.exports = {
   show: usersShow,
   create: usersCreate,
   update: usersUpdate,
-  delete: usersDelete
+  delete: usersDelete,
+  group: usersByGroupName
 };
