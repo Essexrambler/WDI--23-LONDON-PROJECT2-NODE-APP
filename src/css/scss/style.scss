@@ -4,8 +4,9 @@
 
 
 body {
- background-color: red;
+ background-color: $bgd;
  text-align: center;
+ color: white;
  height: 100%;
 }
 
@@ -34,6 +35,23 @@ p {
  margin: 0;
  padding: 0;
 
+}
+
+video.fwkVid {
+   position: fixed;
+   top: 50%;
+   left: 50%;
+   min-width: 100%;
+   min-height: 100%;
+   width: auto;
+   height: auto;
+   z-index: -100;
+   -ms-transform: translateX(-50%) translateY(-50%);
+   -moz-transform: translateX(-50%) translateY(-50%);
+   -webkit-transform: translateX(-50%) translateY(-50%);
+   transform: translateX(-50%) translateY(-50%);
+   /*background: url() no-repeat;*/
+   background-size: cover;
 }
 
 

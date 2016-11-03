@@ -37,6 +37,7 @@ $(() => {
     if(event) event.preventDefault();
     let form = $(this);
     currentUsergroup = form.find('input[name="groupname"]').val();
+    console.log("currentUsergroup:", currentUsergroup);
     let token = localStorage.getItem('token');
     $.ajax({
       url: "/users",
@@ -122,7 +123,6 @@ $(() => {
       </div>
       <div class="one-third column">&nbsp;</div>
     `);
-    $('.profile').on('click', showProfile);
     $('.back').on('click', createGroup);
   }
 
@@ -143,7 +143,7 @@ $(() => {
       </div>
       <div class="one-third column">&nbsp;</div>
     `);
-    $('.profile').on('click', handleGroupForm);
+    // $('.profile').on('click', handleGroupForm);
     $('.back').on('click', createGroup);
 
   }
@@ -173,11 +173,14 @@ $(() => {
         <p> Findyour group's most convenient fireworks display by clicking the button below!!!</p>
         <br>
         <button class="btn btn-primary u-full-width displayfirework">Find Firework displays</button>
-        <img src="/images/Fireworks-Photo.jpg" height="350" width="319">
+        <img src="/images/Fireworks-Photo.jpg" height="300" width="275">
       </div>
       <div class="one-third column">&nbsp</div>
     `);
     $('.displayfirework').on('click', getFireworksDisplayData);
+    $( '.displayfirework' ).click(function(){
+      $('video.fwkVid').addClass('hidden');
+    });
   }
 
   function initMap() {
@@ -235,7 +238,7 @@ $(() => {
         url: `/fireworks/${currentDisplayID}`
       }).done((data) => {
         currentDisplayFullData = data;
-        console.log(currentDisplayFullData);
+        //console.log(currentDisplayFullData);
 
       //console.log('Initial LatLng', initialLat, initialLng);
 
@@ -251,20 +254,20 @@ $(() => {
             <button class="btn btn-primary u-half-width nextDisplay">Next Display</button>
           </div>
         </div>
-
-        <div class="one-third column">&nbsp
-        </div>
+        <div class="row">
         <div class="one-third column">
-          <h4>${currentDisplayFullData.title}</h4>
-          <div id="map"></div>
-          <p>Location: ${currentDisplayFullData.locationName}</p>
-          <p>Opens at: ${currentDisplayFullData.openTime}</p>
-          <p>Display starts at: ${currentDisplayFullData.startTime}</p>
-          <p>Adult from £${currentDisplayFullData.adultCostFrom.toFixed(2)}</p>
-          <p>Child from £${currentDisplayFullData.childCostFrom.toFixed(2)}</p>
-          <p>Average travel time is ${Math.floor(totalTravelTimesForGroup[finalDisplayIndex].avgTime/60)} mins</p>
-            <button class="btn btn-primary u-full-width back">Back</button>
-      <div class="one-third column">&nbsp</div>`);
+        <h4>${currentDisplayFullData.title}</h4>
+        <p>Location: ${currentDisplayFullData.locationName}</p>
+        <p>Opens at: ${currentDisplayFullData.openTime}</p>
+        <p>Display starts at: ${currentDisplayFullData.startTime}</p>
+        <p>Adult from £${currentDisplayFullData.adultCostFrom.toFixed(2)}</p>
+        <p>Child from £${currentDisplayFullData.childCostFrom.toFixed(2)}</p>
+        <p>Average travel time is ${Math.floor(totalTravelTimesForGroup[finalDisplayIndex].avgTime/60)} mins</p>
+        </div>
+        <div class="two-thirds column">
+        <div id="map"></div>
+        </div>
+        <button class="btn btn-primary u-full-width back">Back</button>`);
       $('.back').on('click', showProfile);
       $('.previousDisplay').on('click', showPreviousDisplay);
       $('.nextDisplay').on('click', showNextDisplay);
@@ -418,7 +421,7 @@ $(() => {
     let url = $form.attr('action');
     let method = $form.attr('method');
     let data = $form.serialize();
-    //console.log(url, method, data);
+    console.log("handleGroupForm info:", url, method, data);
     $.ajax({
       url,
       method,
@@ -427,7 +430,7 @@ $(() => {
         if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
       }
     }).done((data) => {
-      //console.log("data:", data);
+      console.log("data:", data);
       showProfile();
     }).fail((err) => {
       //console.log(err);
@@ -499,6 +502,7 @@ $(() => {
           destinations: `${display.location.lat},${display.location.lng}`
         }
       }).done((data) => {
+        console.log("gudtt", data);
         counter++;
         //console.log(display);
         let tripDistance = data.rows[0].elements[0].distance.value;
@@ -529,14 +533,14 @@ $(() => {
         if(token) return jqXHR.setRequestHeader('Authorization', `Bearer ${token}`);
       }
     }).done((data) => {
-      //console.log('user array successfully PUT into database');
+      console.log('user array successfully PUT into database as:', data);
       putUsersOfGroupInAnArray();
     });
   }
 
   function putUsersOfGroupInAnArray () {
     let token = localStorage.getItem('token');
-    //console.log(currentUsergroup);
+    console.log('cug', currentUsergroup);
     $.ajax({
       method: "GET",
       url: `/group/${currentUsergroup}`,
@@ -545,7 +549,8 @@ $(() => {
       }
     }).done((data) => {
       usersInMyGroup = data;
-      console.log(usersInMyGroup);
+      console.log("puotgina", data);
+      console.log("users in my group", usersInMyGroup);
       calculateTotalTravelTimesPerDisplay();
     });
   }

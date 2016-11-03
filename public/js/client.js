@@ -38,6 +38,7 @@ $(function () {
     if (event) event.preventDefault();
     var form = $(this);
     currentUsergroup = form.find('input[name="groupname"]').val();
+    console.log("currentUsergroup:", currentUsergroup);
     var token = localStorage.getItem('token');
     $.ajax({
       url: "/users",
@@ -96,7 +97,6 @@ $(function () {
     if (event) event.preventDefault();
     var userId = localStorage.getItem('userId');
     $main.html('\n      <div class="one-third column">&nbsp;</div>\n      <div class="one-third column">\n        <h2>Join Group</h2>\n\n        <form method="put" action="/users/' + userId + '" class="join-group">\n          <input class="form-control u-full-width" type="text" name="groupname" placeholder="Enter group name">\n          <button class="btn btn-primary u-full-width profile">submit</button>\n          <button class="btn btn-primary u-full-width back">Back</button>\n          <button class="btn btn-primary u-full-width profile">Go To Profile</button>\n        </form>\n      </div>\n      <div class="one-third column">&nbsp;</div>\n    ');
-    $('.profile').on('click', showProfile);
     $('.back').on('click', createGroup);
   }
 
@@ -105,7 +105,7 @@ $(function () {
 
     var userId = localStorage.getItem('userId');
     $main.html('\n      <div class="one-third column">&nbsp;</div>\n      <div class="one-third column">\n        <h2>Create New Group</h2>\n\n        <form method="put" action="/users/' + userId + '" class="new-group">\n          <input class="form-control u-full-width" type="text" name="groupname" placeholder="Group name">\n          <button class="btn btn-primary u-full-width profile">Submit</button>\n          <button class="btn btn-primary u-full-width back">Back</button>\n        </form>\n      </div>\n      <div class="one-third column">&nbsp;</div>\n    ');
-    $('.profile').on('click', handleGroupForm);
+    // $('.profile').on('click', handleGroupForm);
     $('.back').on('click', createGroup);
   }
 
@@ -119,8 +119,11 @@ $(function () {
   function showProfile() {
     //  getFireworksDisplayData();
     if (event) event.preventDefault();
-    $main.html('\n        <div class="one-third column">&nbsp</div>\n      <div class="one-third column">\n        <h2>Your Profile</h2>\n        <p> Findyour group\'s most convenient fireworks display by clicking the button below!!!</p>\n        <br>\n        <button class="btn btn-primary u-full-width displayfirework">Find Firework displays</button>\n        <img src="/images/Fireworks-Photo.jpg" height="350" width="319">\n      </div>\n      <div class="one-third column">&nbsp</div>\n    ');
+    $main.html('\n        <div class="one-third column">&nbsp</div>\n      <div class="one-third column">\n        <h2>Your Profile</h2>\n        <p> Findyour group\'s most convenient fireworks display by clicking the button below!!!</p>\n        <br>\n        <button class="btn btn-primary u-full-width displayfirework">Find Firework displays</button>\n        <img src="/images/Fireworks-Photo.jpg" height="300" width="275">\n      </div>\n      <div class="one-third column">&nbsp</div>\n    ');
     $('.displayfirework').on('click', getFireworksDisplayData);
+    $('.displayfirework').click(function () {
+      $('video.fwkVid').addClass('hidden');
+    });
   }
 
   function initMap() {
@@ -176,12 +179,12 @@ $(function () {
         url: '/fireworks/' + currentDisplayID
       }).done(function (data) {
         currentDisplayFullData = data;
-        console.log(currentDisplayFullData);
+        //console.log(currentDisplayFullData);
 
         //console.log('Initial LatLng', initialLat, initialLng);
 
         if (event) event.preventDefault();
-        $main.html('\n        <div class="row">\n          <div class="four column">\n            <button class="btn btn-primary u-half-width previousDisplay">Previous Display</button>\n          </div>\n          <div class="four column">\n          </div>\n          <div class="four column">\n            <button class="btn btn-primary u-half-width nextDisplay">Next Display</button>\n          </div>\n        </div>\n\n        <div class="one-third column">&nbsp\n        </div>\n        <div class="one-third column">\n          <h4>' + currentDisplayFullData.title + '</h4>\n          <div id="map"></div>\n          <p>Location: ' + currentDisplayFullData.locationName + '</p>\n          <p>Opens at: ' + currentDisplayFullData.openTime + '</p>\n          <p>Display starts at: ' + currentDisplayFullData.startTime + '</p>\n          <p>Adult from \xA3' + currentDisplayFullData.adultCostFrom.toFixed(2) + '</p>\n          <p>Child from \xA3' + currentDisplayFullData.childCostFrom.toFixed(2) + '</p>\n          <p>Average travel time is ' + Math.floor(totalTravelTimesForGroup[finalDisplayIndex].avgTime / 60) + ' mins</p>\n            <button class="btn btn-primary u-full-width back">Back</button>\n      <div class="one-third column">&nbsp</div>');
+        $main.html('\n        <div class="row">\n          <div class="four column">\n            <button class="btn btn-primary u-half-width previousDisplay">Previous Display</button>\n          </div>\n          <div class="four column">\n          </div>\n          <div class="four column">\n            <button class="btn btn-primary u-half-width nextDisplay">Next Display</button>\n          </div>\n        </div>\n        <div class="row">\n        <div class="one-third column">\n        <h4>' + currentDisplayFullData.title + '</h4>\n        <p>Location: ' + currentDisplayFullData.locationName + '</p>\n        <p>Opens at: ' + currentDisplayFullData.openTime + '</p>\n        <p>Display starts at: ' + currentDisplayFullData.startTime + '</p>\n        <p>Adult from \xA3' + currentDisplayFullData.adultCostFrom.toFixed(2) + '</p>\n        <p>Child from \xA3' + currentDisplayFullData.childCostFrom.toFixed(2) + '</p>\n        <p>Average travel time is ' + Math.floor(totalTravelTimesForGroup[finalDisplayIndex].avgTime / 60) + ' mins</p>\n        </div>\n        <div class="two-thirds column">\n        <div id="map"></div>\n        </div>\n        <button class="btn btn-primary u-full-width back">Back</button>');
         $('.back').on('click', showProfile);
         $('.previousDisplay').on('click', showPreviousDisplay);
         $('.nextDisplay').on('click', showNextDisplay);
@@ -292,7 +295,7 @@ $(function () {
     var url = $form.attr('action');
     var method = $form.attr('method');
     var data = $form.serialize();
-    //console.log(url, method, data);
+    console.log("handleGroupForm info:", url, method, data);
     $.ajax({
       url: url,
       method: method,
@@ -301,7 +304,7 @@ $(function () {
         if (token) return jqXHR.setRequestHeader('Authorization', 'Bearer ' + token);
       }
     }).done(function (data) {
-      //console.log("data:", data);
+      console.log("data:", data);
       showProfile();
     }).fail(function (err) {
       //console.log(err);
@@ -373,6 +376,7 @@ $(function () {
           destinations: display.location.lat + ',' + display.location.lng
         }
       }).done(function (data) {
+        console.log("gudtt", data);
         counter++;
         //console.log(display);
         var tripDistance = data.rows[0].elements[0].distance.value;
@@ -403,14 +407,14 @@ $(function () {
         if (token) return jqXHR.setRequestHeader('Authorization', 'Bearer ' + token);
       }
     }).done(function (data) {
-      //console.log('user array successfully PUT into database');
+      console.log('user array successfully PUT into database as:', data);
       putUsersOfGroupInAnArray();
     });
   }
 
   function putUsersOfGroupInAnArray() {
     var token = localStorage.getItem('token');
-    //console.log(currentUsergroup);
+    console.log('cug', currentUsergroup);
     $.ajax({
       method: "GET",
       url: '/group/' + currentUsergroup,
@@ -419,7 +423,8 @@ $(function () {
       }
     }).done(function (data) {
       usersInMyGroup = data;
-      console.log(usersInMyGroup);
+      console.log("puotgina", data);
+      console.log("users in my group", usersInMyGroup);
       calculateTotalTravelTimesPerDisplay();
     });
   }
