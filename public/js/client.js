@@ -119,7 +119,7 @@ $(function () {
   function showProfile() {
     //  getFireworksDisplayData();
     if (event) event.preventDefault();
-    $main.html('\n      <div class="one-third column">&nbsp</div>\n      <div class="one-third column">\n        <h2>Your Profile</h2>\n        <p> Findyour group\'s most convenient fireworks display by clicking the button below!!!</p>\n        <br>\n        <button class="btn btn-primary u-full-width displayfirework">Find Firework displays</button>\n        <img src="/images/Fireworks-Photo.jpg" height="350" width="319">\n      </div>\n      <div class="one-third column">&nbsp</div>\n    ');
+    $main.html('\n        <div class="one-third column">&nbsp</div>\n      <div class="one-third column">\n        <h2>Your Profile</h2>\n        <p> Findyour group\'s most convenient fireworks display by clicking the button below!!!</p>\n        <br>\n        <button class="btn btn-primary u-full-width displayfirework">Find Firework displays</button>\n        <img src="/images/Fireworks-Photo.jpg" height="350" width="319">\n      </div>\n      <div class="one-third column">&nbsp</div>\n    ');
     $('.displayfirework').on('click', getFireworksDisplayData);
   }
 

@@ -167,7 +167,7 @@ $(() => {
   //  getFireworksDisplayData();
     if(event) event.preventDefault();
     $main.html(`
-      <div class="one-third column">&nbsp</div>
+        <div class="one-third column">&nbsp</div>
       <div class="one-third column">
         <h2>Your Profile</h2>
         <p> Findyour group's most convenient fireworks display by clicking the button below!!!</p>
