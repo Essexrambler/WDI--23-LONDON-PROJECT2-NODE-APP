@@ -18,6 +18,7 @@ $(() => {
   let currentDisplayFullData =[];
   let totalTravelTimePerDisplay=[];
   let currentDisplayID;
+  let finalDisplayIndex;
 
   function isLoggedIn() {
     return !!localStorage.getItem('token');
@@ -182,63 +183,96 @@ $(() => {
     $('.displayfirework').on('click', getFireworksDisplayData);
   }
 
-  function fireworkListingsPage () {
-    let finalDisplayIndex = 0;
-    //Get all fireworks information for the fireworks ID at our index 0... note that this is NOT the index within fireworks itself.
-    currentDisplayID = totalTravelTimesForGroup[0].displayid;
+  function initMap() {
+    var styles = [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#FFFFFF"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"blue"},{"lightness":17}]}, {"featureType":"poi.park","elementType":"geometry","stylers":[{"color":"#e74b12"},{"lightness":17}]}];
 
-    $.ajax({
-      method: 'get',
-      url: `/fireworks/${currentDisplayID}`
-    }).done((data) => {
-      currentDisplayFullData = data;
-      console.log(currentDisplayFullData);
+    var image = './images/fireworks100.png';
 
-    //console.log('Initial LatLng', initialLat, initialLng);
-
-    if(event) event.preventDefault();
-    $main.html(`
-      <div class="one-third column">&nbsp</div>
-      <div class="one-third column">
-
-        <h4>${currentDisplayFullData.title}</h4>
-        <div id="map">
-      </div>
-        <p>Location: ${currentDisplayFullData.locationName}</p>
-        <p>Opens at: ${currentDisplayFullData.openTime}</p>
-        <p>Display starts at: ${currentDisplayFullData.startTime}</p>
-        <p>Adult cost from: £${currentDisplayFullData.adultCostFrom}</p>
-          <button class="btn btn-primary u-full-width back">Back</button>
-      <div class="one-third column">&nbsp</div>`);
-      $('.back').on('click', showProfile);
-
-
-      let map;
-
-      function initMap() {
-
-      var styles = [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#FFFFFF"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"blue"},{"lightness":17}]}, {"featureType":"poi.park","elementType":"geometry","stylers":[{"color":"#e74b12"},{"lightness":17}]}];
-
-      var image = './images/fireworks100.png';
-
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: currentDisplayFullData.location.lat, lng: currentDisplayFullData.location.lng },
-        styles: styles,
-        mapTypeControl: false,
-        zoom: 12
-        });
-
-      let marker = new google.maps.Marker({
-        map: map,
-        position: { lat: currentDisplayFullData.location.lat, lng: currentDisplayFullData.location.lng },
-        title: `${currentDisplayFullData.locationName}`,
-        icon: image,
-        animation: google.maps.Animation.DROP,
+    let map = new google.maps.Map(document.getElementById('map'), {
+      center: { lat: currentDisplayFullData.location.lat, lng: currentDisplayFullData.location.lng },
+      styles: styles,
+      mapTypeControl: false,
+      zoom: 12
       });
 
+    let marker = new google.maps.Marker({
+      map: map,
+      position: { lat: currentDisplayFullData.location.lat, lng: currentDisplayFullData.location.lng },
+      title: `${currentDisplayFullData.locationName}`,
+      icon: image,
+      animation: google.maps.Animation.DROP,
+    });
+  }
+
+  function fireworkListingsPage () {
+    let finalDisplayIndex = 0;
+
+    function showPreviousDisplay () {
+      if (finalDisplayIndex === 0) {
+        finalDisplayIndex = 46;
+      }
+      else {
+      finalDisplayIndex--;
+      }
+      renderListingsPage();
     }
+
+    function showNextDisplay () {
+      if (finalDisplayIndex === 46) {
+        finalDisplayIndex = 0;
+      }
+      else {
+      finalDisplayIndex++;
+      }
+      renderListingsPage();
+    }
+
+    renderListingsPage();
+
+    function renderListingsPage () {
+      //Get all fireworks information for the fireworks ID at our index 0... note that this is NOT the index within fireworks itself.
+      currentDisplayID = totalTravelTimesForGroup[finalDisplayIndex].displayid;
+
+      $.ajax({
+        method: 'get',
+        url: `/fireworks/${currentDisplayID}`
+      }).done((data) => {
+        currentDisplayFullData = data;
+        console.log(currentDisplayFullData);
+
+      //console.log('Initial LatLng', initialLat, initialLng);
+
+      if(event) event.preventDefault();
+      $main.html(`
+        <div class="row">
+          <div class="four column">
+            <button class="btn btn-primary u-half-width previousDisplay">Previous Display</button>
+          </div>
+          <div class="four column">
+          </div>
+          <div class="four column">
+            <button class="btn btn-primary u-half-width nextDisplay">Next Display</button>
+          </div>
+        </div>
+
+        <div class="one-third column">&nbsp
+        </div>
+        <div class="one-third column">
+          <h4>${currentDisplayFullData.title}</h4>
+          <div id="map"></div>
+          <p>Location: ${currentDisplayFullData.locationName}</p>
+          <p>Opens at: ${currentDisplayFullData.openTime}</p>
+          <p>Display starts at: ${currentDisplayFullData.startTime}</p>
+          <p>Adult cost from: £${currentDisplayFullData.adultCostFrom}</p>
+            <button class="btn btn-primary u-full-width back">Back</button>
+      <div class="one-third column">&nbsp</div>`);
+      $('.back').on('click', showProfile);
+      $('.previousDisplay').on('click', showPreviousDisplay);
+      $('.nextDisplay').on('click', showNextDisplay);
+
       initMap();
-  });
+    });
+  }
 }
 
   // function findDisplay () {

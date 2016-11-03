@@ -20,6 +20,7 @@ $(function () {
   var currentDisplayFullData = [];
   var totalTravelTimePerDisplay = [];
   var currentDisplayID = void 0;
+  var finalDisplayIndex = void 0;
 
   function isLoggedIn() {
     return !!localStorage.getItem('token');
@@ -123,49 +124,72 @@ $(function () {
     $('.displayfirework').on('click', getFireworksDisplayData);
   }
 
+  function initMap() {
+    var styles = [{ "featureType": "all", "elementType": "labels.text.fill", "stylers": [{ "saturation": 36 }, { "color": "#FFFFFF" }, { "lightness": 40 }] }, { "featureType": "all", "elementType": "labels.text.stroke", "stylers": [{ "visibility": "on" }, { "color": "#000000" }, { "lightness": 16 }] }, { "featureType": "all", "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }, { "featureType": "administrative", "elementType": "geometry.fill", "stylers": [{ "color": "#000000" }, { "lightness": 20 }] }, { "featureType": "administrative", "elementType": "geometry.stroke", "stylers": [{ "color": "#000000" }, { "lightness": 17 }, { "weight": 1.2 }] }, { "featureType": "landscape", "elementType": "geometry", "stylers": [{ "color": "#000000" }, { "lightness": 20 }] }, { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#000000" }, { "lightness": 21 }] }, { "featureType": "road.highway", "elementType": "geometry.fill", "stylers": [{ "color": "#000000" }, { "lightness": 17 }] }, { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [{ "color": "#000000" }, { "lightness": 29 }, { "weight": 0.2 }] }, { "featureType": "road.arterial", "elementType": "geometry", "stylers": [{ "color": "#000000" }, { "lightness": 18 }] }, { "featureType": "road.local", "elementType": "geometry", "stylers": [{ "color": "#000000" }, { "lightness": 16 }] }, { "featureType": "transit", "elementType": "geometry", "stylers": [{ "color": "#000000" }, { "lightness": 19 }] }, { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "blue" }, { "lightness": 17 }] }, { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#e74b12" }, { "lightness": 17 }] }];
+
+    var image = './images/fireworks100.png';
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+      center: { lat: currentDisplayFullData.location.lat, lng: currentDisplayFullData.location.lng },
+      styles: styles,
+      mapTypeControl: false,
+      zoom: 12
+    });
+
+    var marker = new google.maps.Marker({
+      map: map,
+      position: { lat: currentDisplayFullData.location.lat, lng: currentDisplayFullData.location.lng },
+      title: '' + currentDisplayFullData.locationName,
+      icon: image,
+      animation: google.maps.Animation.DROP
+    });
+  }
+
   function fireworkListingsPage() {
     var finalDisplayIndex = 0;
-    //Get all fireworks information for the fireworks ID at our index 0... note that this is NOT the index within fireworks itself.
-    currentDisplayID = totalTravelTimesForGroup[0].displayid;
 
-    $.ajax({
-      method: 'get',
-      url: '/fireworks/' + currentDisplayID
-    }).done(function (data) {
-      currentDisplayFullData = data;
-      console.log(currentDisplayFullData);
-
-      //console.log('Initial LatLng', initialLat, initialLng);
-
-      if (event) event.preventDefault();
-      $main.html('\n      <div class="one-third column">&nbsp</div>\n      <div class="one-third column">\n\n        <h4>' + currentDisplayFullData.title + '</h4>\n        <div id="map">\n      </div>\n        <p>Location: ' + currentDisplayFullData.locationName + '</p>\n        <p>Opens at: ' + currentDisplayFullData.openTime + '</p>\n        <p>Display starts at: ' + currentDisplayFullData.startTime + '</p>\n        <p>Adult cost from: \xA3' + currentDisplayFullData.adultCostFrom + '</p>\n          <button class="btn btn-primary u-full-width back">Back</button>\n      <div class="one-third column">&nbsp</div>');
-      $('.back').on('click', showProfile);
-
-      var map = void 0;
-
-      function initMap() {
-
-        var styles = [{ "featureType": "all", "elementType": "labels.text.fill", "stylers": [{ "saturation": 36 }, { "color": "#FFFFFF" }, { "lightness": 40 }] }, { "featureType": "all", "elementType": "labels.text.stroke", "stylers": [{ "visibility": "on" }, { "color": "#000000" }, { "lightness": 16 }] }, { "featureType": "all", "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }, { "featureType": "administrative", "elementType": "geometry.fill", "stylers": [{ "color": "#000000" }, { "lightness": 20 }] }, { "featureType": "administrative", "elementType": "geometry.stroke", "stylers": [{ "color": "#000000" }, { "lightness": 17 }, { "weight": 1.2 }] }, { "featureType": "landscape", "elementType": "geometry", "stylers": [{ "color": "#000000" }, { "lightness": 20 }] }, { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#000000" }, { "lightness": 21 }] }, { "featureType": "road.highway", "elementType": "geometry.fill", "stylers": [{ "color": "#000000" }, { "lightness": 17 }] }, { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [{ "color": "#000000" }, { "lightness": 29 }, { "weight": 0.2 }] }, { "featureType": "road.arterial", "elementType": "geometry", "stylers": [{ "color": "#000000" }, { "lightness": 18 }] }, { "featureType": "road.local", "elementType": "geometry", "stylers": [{ "color": "#000000" }, { "lightness": 16 }] }, { "featureType": "transit", "elementType": "geometry", "stylers": [{ "color": "#000000" }, { "lightness": 19 }] }, { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "blue" }, { "lightness": 17 }] }, { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#e74b12" }, { "lightness": 17 }] }];
-
-        var image = './images/fireworks100.png';
-
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: { lat: currentDisplayFullData.location.lat, lng: currentDisplayFullData.location.lng },
-          styles: styles,
-          mapTypeControl: false,
-          zoom: 12
-        });
-
-        var marker = new google.maps.Marker({
-          map: map,
-          position: { lat: currentDisplayFullData.location.lat, lng: currentDisplayFullData.location.lng },
-          title: '' + currentDisplayFullData.locationName,
-          icon: image,
-          animation: google.maps.Animation.DROP
-        });
+    function showPreviousDisplay() {
+      if (finalDisplayIndex === 0) {
+        finalDisplayIndex = 46;
+      } else {
+        finalDisplayIndex--;
       }
-      initMap();
-    });
+      renderListingsPage();
+    }
+
+    function showNextDisplay() {
+      if (finalDisplayIndex === 46) {
+        finalDisplayIndex = 0;
+      } else {
+        finalDisplayIndex++;
+      }
+      renderListingsPage();
+    }
+
+    renderListingsPage();
+
+    function renderListingsPage() {
+      //Get all fireworks information for the fireworks ID at our index 0... note that this is NOT the index within fireworks itself.
+      currentDisplayID = totalTravelTimesForGroup[finalDisplayIndex].displayid;
+
+      $.ajax({
+        method: 'get',
+        url: '/fireworks/' + currentDisplayID
+      }).done(function (data) {
+        currentDisplayFullData = data;
+        console.log(currentDisplayFullData);
+
+        //console.log('Initial LatLng', initialLat, initialLng);
+
+        if (event) event.preventDefault();
+        $main.html('\n        <div class="row">\n          <div class="four column">\n            <button class="btn btn-primary u-half-width previousDisplay">Previous Display</button>\n          </div>\n          <div class="four column">\n          </div>\n          <div class="four column">\n            <button class="btn btn-primary u-half-width nextDisplay">Next Display</button>\n          </div>\n        </div>\n\n        <div class="one-third column">&nbsp\n        </div>\n        <div class="one-third column">\n          <h4>' + currentDisplayFullData.title + '</h4>\n          <div id="map"></div>\n          <p>Location: ' + currentDisplayFullData.locationName + '</p>\n          <p>Opens at: ' + currentDisplayFullData.openTime + '</p>\n          <p>Display starts at: ' + currentDisplayFullData.startTime + '</p>\n          <p>Adult cost from: \xA3' + currentDisplayFullData.adultCostFrom + '</p>\n            <button class="btn btn-primary u-full-width back">Back</button>\n      <div class="one-third column">&nbsp</div>');
+        $('.back').on('click', showProfile);
+        $('.previousDisplay').on('click', showPreviousDisplay);
+        $('.nextDisplay').on('click', showNextDisplay);
+
+        initMap();
+      });
+    }
   }
 
   // function findDisplay () {
