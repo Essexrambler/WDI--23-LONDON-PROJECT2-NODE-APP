@@ -260,7 +260,9 @@ $(() => {
           <p>Location: ${currentDisplayFullData.locationName}</p>
           <p>Opens at: ${currentDisplayFullData.openTime}</p>
           <p>Display starts at: ${currentDisplayFullData.startTime}</p>
-          <p>Adult cost from: £${currentDisplayFullData.adultCostFrom}</p>
+          <p>Adult from £${currentDisplayFullData.adultCostFrom.toFixed(2)}</p>
+          <p>Child from £${currentDisplayFullData.childCostFrom.toFixed(2)}</p>
+          <p>Average travel time is ${Math.floor(totalTravelTimesForGroup[finalDisplayIndex].avgTime/60)} mins</p>
             <button class="btn btn-primary u-full-width back">Back</button>
       <div class="one-third column">&nbsp</div>`);
       $('.back').on('click', showProfile);
