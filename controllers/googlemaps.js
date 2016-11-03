@@ -8,7 +8,7 @@ function googleTravelTime(req, res) {
       mode: 'transit',
       origins: req.query.origins,
       destinations: req.query.destinations,
-      key: "AIzaSyAUJ_9ab-uHC7XZcemj45KzRCvKovbyVMg"
+      key: "AIzaSyDmHPzEgjMmmlpspNeXnj09KsXyvBz7Csg"
     },
     json: true
   })
