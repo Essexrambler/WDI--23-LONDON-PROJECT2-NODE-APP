@@ -86,7 +86,7 @@ $(function () {
 
   function createGroup() {
     if (event) event.preventDefault();
-    $main.html('\n      <div class="one-third column">&nbsp;</div>\n      <div class="one-third column">\n        <h2>Create or Join Group</h2>\n\n        <button class="btn btn-primary u-full-width create">Create Group</button>\n        <button class="btn btn-primary u-full-width join">Join Group</button>\n        <button class="btn btn-primary u-full-width profile">Go to Profile</button>\n      </div>\n      <div class="one-third column">&nbsp;</div>\n    ');
+    $main.html('\n       <div class="one-third column">&nbsp;</div>\n       <div class="one-third column">\n         <h2>Welcome to the Fireworks Finder App</h2>\n         In order to this app you must create or join a group!<br>\n         Friends are good for you, they make you happy (sometimes!).\n         If you already have a group go straight to your profile.\n         <button class="btn btn-primary u-full-width create">Create Group</button>\n         <button class="btn btn-primary u-full-width join">Join Group</button>\n         <button class="btn btn-primary u-full-width profile">Go to Profile</button>\n       </div>\n       <div class="one-third column">&nbsp;</div>\n     ');
     $('.create').on("click", createNewGroup);
     $('.join').on("click", joinGroup);
     $('.profile').on("click", showProfile);
@@ -96,7 +96,7 @@ $(function () {
     if (event) event.preventDefault();
     var userId = localStorage.getItem('userId');
     $main.html('\n      <div class="one-third column">&nbsp;</div>\n      <div class="one-third column">\n        <h2>Join Group</h2>\n\n        <form method="put" action="/users/' + userId + '" class="join-group">\n          <input class="form-control u-full-width" type="text" name="groupname" placeholder="Enter group name">\n          <button class="btn btn-primary u-full-width profile">submit</button>\n          <button class="btn btn-primary u-full-width back">Back</button>\n          <button class="btn btn-primary u-full-width profile">Go To Profile</button>\n        </form>\n      </div>\n      <div class="one-third column">&nbsp;</div>\n    ');
-    $('.profile').on('submit', 'form', handleGroupForm);
+    $('.profile').on('click', showProfile);
     $('.back').on('click', createGroup);
   }
 
@@ -104,8 +104,8 @@ $(function () {
     if (event) event.preventDefault();
 
     var userId = localStorage.getItem('userId');
-    $main.html('\n      <div class="one-third column">&nbsp;</div>\n      <div class="one-third column">\n        <h2>Create New Group</h2>\n\n        <form method="put" action="/users/' + userId + '" class="new-group">\n          <input class="form-control u-full-width" type="text" name="groupname" placeholder="Group name">\n          <button class="btn btn-primary u-full-width profile">submit</button>\n          <button class="btn btn-primary u-full-width back">Back</button>\n          <button class="btn btn-primary u-full-width profile">Go to Profile</button>\n\n        </form>\n      </div>\n      <div class="one-third column">&nbsp;</div>\n    ');
-    $('.profile').on('submit', 'form', handleGroupForm);
+    $main.html('\n      <div class="one-third column">&nbsp;</div>\n      <div class="one-third column">\n        <h2>Create New Group</h2>\n\n        <form method="put" action="/users/' + userId + '" class="new-group">\n          <input class="form-control u-full-width" type="text" name="groupname" placeholder="Group name">\n          <button class="btn btn-primary u-full-width profile">Submit</button>\n          <button class="btn btn-primary u-full-width back">Back</button>\n        </form>\n      </div>\n      <div class="one-third column">&nbsp;</div>\n    ');
+    $('.profile').on('click', handleGroupForm);
     $('.back').on('click', createGroup);
   }
 
@@ -119,8 +119,7 @@ $(function () {
   function showProfile() {
     //  getFireworksDisplayData();
     if (event) event.preventDefault();
-    $main.html('\n      <div class="one-third column">&nbsp</div>\n      <div class="one-third column">\n        <h2>Welcome</h2>\n        <p> Two ways to use this App.\n        1. Give your group name to your friends. So they can register\n        and join the same group.<br>\n        2. Alternatively, plan your own individual route.\n        <button class="btn btn-primary u-full-width displayfirework">Find Firework displays</button>\n        <button class="btn btn-primary u-full-width">See selected</button>\n        <button class="btn btn-primary u-full-width create">Create or Join Group</button>\n      </div>\n      <div class="one-third column">&nbsp</div>\n    ');
-    $('.create').on('click', createGroup);
+    $main.html('\n      <div class="one-third column">&nbsp</div>\n      <div class="one-third column">\n        <h2>Your Profile</h2>\n        <p> Findyour group\'s most convenient fireworks display by clicking the button below!!!</p>\n        <br>\n        <button class="btn btn-primary u-full-width displayfirework">Find Firework displays</button>\n        <img src="/images/Fireworks-Photo.jpg" height="350" width="319">\n      </div>\n      <div class="one-third column">&nbsp</div>\n    ');
     $('.displayfirework').on('click', getFireworksDisplayData);
   }
 

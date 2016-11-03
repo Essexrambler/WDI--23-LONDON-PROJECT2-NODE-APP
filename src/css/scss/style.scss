@@ -1,0 +1,45 @@
+@import "variables";
+
+.hidden{display:none!important}
+
+
+body {
+ background-color: red;
+ text-align: center;
+ height: 100%;
+}
+
+#map {
+ width: 100%;
+ height: 250px;
+ z-index: 1;
+}
+
+button {
+ background-color: orange;
+}
+
+
+#nav {
+ margin: 13px 0 0 0;
+}
+
+#nav ul li {
+ display: inline;
+ margin: 0 20px 0 0;
+ margin-bottom: 130px;
+}
+
+p {
+ margin: 0;
+ padding: 0;
+
+}
+
+
+
+
+
+/*input[type=text]{
+ background-color: green;
+}*/

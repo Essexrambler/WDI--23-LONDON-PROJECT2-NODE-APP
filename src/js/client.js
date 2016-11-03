@@ -84,22 +84,25 @@ $(() => {
   }
 
 
-  function createGroup() {
-    if(event) event.preventDefault();
-    $main.html(`
-      <div class="one-third column">&nbsp;</div>
-      <div class="one-third column">
-        <h2>Create or Join Group</h2>
 
-        <button class="btn btn-primary u-full-width create">Create Group</button>
-        <button class="btn btn-primary u-full-width join">Join Group</button>
-        <button class="btn btn-primary u-full-width profile">Go to Profile</button>
-      </div>
-      <div class="one-third column">&nbsp;</div>
-    `);
-    $('.create').on( "click", createNewGroup);
-    $('.join').on( "click", joinGroup);
-    $('.profile').on( "click", showProfile);
+  function createGroup() {
+     if(event) event.preventDefault();
+     $main.html(`
+       <div class="one-third column">&nbsp;</div>
+       <div class="one-third column">
+         <h2>Welcome to the Fireworks Finder App</h2>
+         In order to this app you must create or join a group!<br>
+         Friends are good for you, they make you happy (sometimes!).
+         If you already have a group go straight to your profile.
+         <button class="btn btn-primary u-full-width create">Create Group</button>
+         <button class="btn btn-primary u-full-width join">Join Group</button>
+         <button class="btn btn-primary u-full-width profile">Go to Profile</button>
+       </div>
+       <div class="one-third column">&nbsp;</div>
+     `);
+     $('.create').on( "click", createNewGroup);
+     $('.join').on( "click", joinGroup);
+     $('.profile').on( "click", showProfile);
   }
 
   function joinGroup() {
@@ -119,7 +122,7 @@ $(() => {
       </div>
       <div class="one-third column">&nbsp;</div>
     `);
-    $('.profile').on('submit', 'form', handleGroupForm);
+    $('.profile').on('click', showProfile);
     $('.back').on('click', createGroup);
   }
 
@@ -134,15 +137,13 @@ $(() => {
 
         <form method="put" action="/users/${userId}" class="new-group">
           <input class="form-control u-full-width" type="text" name="groupname" placeholder="Group name">
-          <button class="btn btn-primary u-full-width profile">submit</button>
+          <button class="btn btn-primary u-full-width profile">Submit</button>
           <button class="btn btn-primary u-full-width back">Back</button>
-          <button class="btn btn-primary u-full-width profile">Go to Profile</button>
-
         </form>
       </div>
       <div class="one-third column">&nbsp;</div>
     `);
-    $('.profile').on('submit', 'form', handleGroupForm);
+    $('.profile').on('click', handleGroupForm);
     $('.back').on('click', createGroup);
 
   }
@@ -168,18 +169,14 @@ $(() => {
     $main.html(`
       <div class="one-third column">&nbsp</div>
       <div class="one-third column">
-        <h2>Welcome</h2>
-        <p> Two ways to use this App.
-        1. Give your group name to your friends. So they can register
-        and join the same group.<br>
-        2. Alternatively, plan your own individual route.
+        <h2>Your Profile</h2>
+        <p> Findyour group's most convenient fireworks display by clicking the button below!!!</p>
+        <br>
         <button class="btn btn-primary u-full-width displayfirework">Find Firework displays</button>
-        <button class="btn btn-primary u-full-width">See selected</button>
-        <button class="btn btn-primary u-full-width create">Create or Join Group</button>
+        <img src="/images/Fireworks-Photo.jpg" height="350" width="319">
       </div>
       <div class="one-third column">&nbsp</div>
     `);
-    $('.create').on('click', createGroup);
     $('.displayfirework').on('click', getFireworksDisplayData);
   }
 
