@@ -16,6 +16,8 @@ $(() => {
   let totalTravelimesOfAllDisplays = [];
   let totalTravelTimesForGroup = [];
   let currentDisplayFullData =[];
+  let totalTravelTimePerDisplay=[];
+  let currentDisplayID;
 
   function isLoggedIn() {
     return !!localStorage.getItem('token');
@@ -160,10 +162,10 @@ $(() => {
   }
 
   function showProfile() {
-    getFireworksDisplayData();
+  //  getFireworksDisplayData();
     if(event) event.preventDefault();
     $main.html(`
-      <div class="one-third column">&nbsp;</div>
+      <div class="one-third column">&nbsp</div>
       <div class="one-third column">
         <h2>Welcome</h2>
         <p> Two ways to use this App.
@@ -174,16 +176,16 @@ $(() => {
         <button class="btn btn-primary u-full-width">See selected</button>
         <button class="btn btn-primary u-full-width create">Create or Join Group</button>
       </div>
-      <div class="one-third column">&nbsp;</div>
+      <div class="one-third column">&nbsp</div>
     `);
     $('.create').on('click', createGroup);
-    $('.displayfirework').on('click', fireworkListingsPage);
+    $('.displayfirework').on('click', getFireworksDisplayData);
   }
 
   function fireworkListingsPage () {
     let finalDisplayIndex = 0;
     //Get all fireworks information for the fireworks ID at our index 0... note that this is NOT the index within fireworks itself.
-    let currentDisplayID = totalTravelTimesForGroup[0].displayid;
+    currentDisplayID = totalTravelTimesForGroup[0].displayid;
 
     $.ajax({
       method: 'get',
@@ -196,9 +198,9 @@ $(() => {
 
     if(event) event.preventDefault();
     $main.html(`
-      <div class="one-third column">&nbsp;</div>
+      <div class="one-third column">&nbsp</div>
       <div class="one-third column">
-        <button class="btn btn-primary u-full-width back">Back</button>
+
         <h4>${currentDisplayFullData.title}</h4>
         <div id="map">
       </div>
@@ -206,7 +208,8 @@ $(() => {
         <p>Opens at: ${currentDisplayFullData.openTime}</p>
         <p>Display starts at: ${currentDisplayFullData.startTime}</p>
         <p>Adult cost from: £${currentDisplayFullData.adultCostFrom}</p>
-      <div class="one-third column">&nbsp;</div>`);
+          <button class="btn btn-primary u-full-width back">Back</button>
+      <div class="one-third column">&nbsp</div>`);
       $('.back').on('click', showProfile);
 
 
@@ -530,14 +533,11 @@ $(() => {
         displayid: displayData[i].displayid
       };
     }
-
     totalTravelTimesForGroup.sort((a, b) => {
       return a.totalTime - b.totalTime;
     });
-    console.log(totalTravelTimesForGroup);
+    fireworkListingsPage();
   }
-
-
 });
 
 

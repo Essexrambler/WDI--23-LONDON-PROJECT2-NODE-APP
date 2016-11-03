@@ -18,6 +18,8 @@ $(function () {
   var totalTravelimesOfAllDisplays = [];
   var totalTravelTimesForGroup = [];
   var currentDisplayFullData = [];
+  var totalTravelTimePerDisplay = [];
+  var currentDisplayID = void 0;
 
   function isLoggedIn() {
     return !!localStorage.getItem('token');
@@ -114,17 +116,17 @@ $(function () {
   }
 
   function showProfile() {
-    getFireworksDisplayData();
+    //  getFireworksDisplayData();
     if (event) event.preventDefault();
-    $main.html('\n      <div class="one-third column">&nbsp;</div>\n      <div class="one-third column">\n        <h2>Welcome</h2>\n        <p> Two ways to use this App.\n        1. Give your group name to your friends. So they can register\n        and join the same group.<br>\n        2. Alternatively, plan your own individual route.\n        <button class="btn btn-primary u-full-width displayfirework">Find Firework displays</button>\n        <button class="btn btn-primary u-full-width">See selected</button>\n        <button class="btn btn-primary u-full-width create">Create or Join Group</button>\n      </div>\n      <div class="one-third column">&nbsp;</div>\n    ');
+    $main.html('\n      <div class="one-third column">&nbsp</div>\n      <div class="one-third column">\n        <h2>Welcome</h2>\n        <p> Two ways to use this App.\n        1. Give your group name to your friends. So they can register\n        and join the same group.<br>\n        2. Alternatively, plan your own individual route.\n        <button class="btn btn-primary u-full-width displayfirework">Find Firework displays</button>\n        <button class="btn btn-primary u-full-width">See selected</button>\n        <button class="btn btn-primary u-full-width create">Create or Join Group</button>\n      </div>\n      <div class="one-third column">&nbsp</div>\n    ');
     $('.create').on('click', createGroup);
-    $('.displayfirework').on('click', fireworkListingsPage);
+    $('.displayfirework').on('click', getFireworksDisplayData);
   }
 
   function fireworkListingsPage() {
     var finalDisplayIndex = 0;
     //Get all fireworks information for the fireworks ID at our index 0... note that this is NOT the index within fireworks itself.
-    var currentDisplayID = totalTravelTimesForGroup[0].displayid;
+    currentDisplayID = totalTravelTimesForGroup[0].displayid;
 
     $.ajax({
       method: 'get',
@@ -136,7 +138,7 @@ $(function () {
       //console.log('Initial LatLng', initialLat, initialLng);
 
       if (event) event.preventDefault();
-      $main.html('\n      <div class="one-third column">&nbsp;</div>\n      <div class="one-third column">\n        <button class="btn btn-primary u-full-width back">Back</button>\n        <h4>' + currentDisplayFullData.title + '</h4>\n        <div id="map">\n      </div>\n        <p>Location: ' + currentDisplayFullData.locationName + '</p>\n        <p>Opens at: ' + currentDisplayFullData.openTime + '</p>\n        <p>Display starts at: ' + currentDisplayFullData.startTime + '</p>\n        <p>Adult cost from: \xA3' + currentDisplayFullData.adultCostFrom + '</p>\n      <div class="one-third column">&nbsp;</div>');
+      $main.html('\n      <div class="one-third column">&nbsp</div>\n      <div class="one-third column">\n\n        <h4>' + currentDisplayFullData.title + '</h4>\n        <div id="map">\n      </div>\n        <p>Location: ' + currentDisplayFullData.locationName + '</p>\n        <p>Opens at: ' + currentDisplayFullData.openTime + '</p>\n        <p>Display starts at: ' + currentDisplayFullData.startTime + '</p>\n        <p>Adult cost from: \xA3' + currentDisplayFullData.adultCostFrom + '</p>\n          <button class="btn btn-primary u-full-width back">Back</button>\n      <div class="one-third column">&nbsp</div>');
       $('.back').on('click', showProfile);
 
       var map = void 0;
@@ -415,11 +417,10 @@ $(function () {
         displayid: displayData[i].displayid
       };
     }
-
     totalTravelTimesForGroup.sort(function (a, b) {
       return a.totalTime - b.totalTime;
     });
-    console.log(totalTravelTimesForGroup);
+    fireworkListingsPage();
   }
 });
 
